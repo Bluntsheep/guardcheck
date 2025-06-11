@@ -11,9 +11,9 @@ const page = () => {
       </div>
       <div class=" flex flex-col gap-6 content-box px-[15%] text-[#888888] mb-10">
         <p className="">
-          1. GUARDCHECK.COM CC ("GUARDCHECK") provides the information and data
+          {`1. GUARDCHECK.COM CC ("GUARDCHECK") provides the information and data
           contained on this website to users (the "USER") subject to the terms
-          and conditions set out herein (the "TERMS")
+          and conditions set out herein (the "TERMS")`}
         </p>
         <p>
           2. By accessing the website, the USER is deemed to have read,
@@ -28,25 +28,25 @@ const page = () => {
         <p className="ml-5">
           1. to record information on a Security Guard employed by the USER;{" "}
           <br />
-          2. to obtain information and data on a Security Guard that has applied
+          {`2. to obtain information and data on a Security Guard that has applied
           for a position at the USER'S business; <br />
           3. to place a CV on the website or to access the CV'S placed on the
-          website.
+          website.`}
         </p>
         <p></p>
         <p>
-          4. The USER specifically warrants that it has obtained the necessary
+          {` 4. The USER specifically warrants that it has obtained the necessary
           written consent from its Security Guards that it may list the Security
           Guard's name on the website where that Security Guard has committed an
           offence whilst in the employ of the USER and/or has absconded or his
           services have terminated following disciplinary action and dismissal
-          following fair procedure.
+          following fair procedure.`}
         </p>
         <p>
-          5. The USER acknowledges and agrees that the confidential information
+          {`5. The USER acknowledges and agrees that the confidential information
           and data shall be utilized by it solely and exclusively for the
           purposes of assisting the USER in the ordinary course of the USER'S
-          business from time to time and for no other purpose whatsoever.
+          business from time to time and for no other purpose whatsoever.`}
         </p>
         <p>
           6. The USER shall ensure that any information submitted to GUARDCHECK
@@ -77,7 +77,7 @@ const page = () => {
           data from the website in its sole discretion.
         </p>
         <p>
-          12. To subscribe to the website the USER must complete the online
+          {` 12. To subscribe to the website the USER must complete the online
           application form ("APPLICATION FORM). On receipt of the USER'S
           APPLICATION FORM, GUARDCHECK will take such steps it deems necessary,
           to evaluate the USER'S application and to verify the information about
@@ -89,10 +89,10 @@ const page = () => {
           cancel the subscription prior to expiry of one year from the date of
           acceptance of the application by GUARDCHECK (the "INITIAL PERIOD")
           unless GUARDCHECK expressly agrees thereto. The USER shall thereafter
-          be required to renew its application.
+          be required to renew its application.`}
         </p>
         <p>
-          13. The USER agrees to pay GUARDCHECK the fees stipulated on the
+          {`13. The USER agrees to pay GUARDCHECK the fees stipulated on the
           website. Payment shall be made by way of Electronic Transfer, direct
           deposit, cheques or credit card. The USER hereby authorizes GUARDCHECK
           to charge the payment for such fees to the USER'S credit card, using
@@ -102,7 +102,7 @@ const page = () => {
           any payment made by the USER, nor shall theUSER be entitled to reverse
           such payment, for any reason whatsoever. Upon receipt of actual
           payment and acceptance of the Application by GUARDCHECK, the USER
-          shall be issued with a password.
+          shall be issued with a password.`}
         </p>
         <p>
           14. By accessing the website, the USER warrants and represents to
@@ -169,12 +169,12 @@ const page = () => {
           from this agreement.
         </p>
         <p>
-          19. External links may be provided, but they are beyond the control of
+          {`19. External links may be provided, but they are beyond the control of
           GUARDCHECK and no representation is made as to their content. Use or
           reliance on any external links provided is at the USER'S own risk. No
           links shall be created from any website controlled by the USER or
           otherwise to this website without the express prior written permission
-          of GUARDCHECK.
+          of GUARDCHECK.`}
         </p>
         <p>20.</p>
         <p className="ml-5">
@@ -206,7 +206,7 @@ const page = () => {
           and the remaining provisions of these terms and conditions shall
           remain in full force and effect.
           <br />
-          4. Should GUARDCHECK be prevented from fulfilling any of its
+          {`4. Should GUARDCHECK be prevented from fulfilling any of its
           obligations hereunder as a result of any event beyond its control,
           then those obligations shall be deemed to have been suspended to the
           extent that and for as long as GUARDCHECK is so prevented from
@@ -215,7 +215,7 @@ const page = () => {
           than fourteen days after it has first occurred then GUARDCHECK shall
           be entitled (but not obliged) to terminate all of its rights and
           obligations in terms of or arising out of these terms by giving notice
-          to the USER.
+          to the USER.`}
           <br />
           5. These terms shall be governed by and construed in accordance with
           the laws of the Republic of South Africa. The USER hereby consents and
@@ -226,9 +226,9 @@ const page = () => {
         </p>
         <p></p>
         <p className="m-0">
-          21. In compliance with Section 43(1) of the Electronic Communications
+          {`21. In compliance with Section 43(1) of the Electronic Communications
           and Transactions Act 25 of 2002 ("ECTA"), your attention is drawn to
-          the following:-
+          the following:-`}
         </p>
         <p className="ml-5">
           1. Full name and legal status: GUARDCHECK (Pty) Ltd, a Private Company
@@ -264,9 +264,9 @@ const page = () => {
           correctness of the information delivered to the USER or any part
           thereof;
           <br />
-          12. Time within which the services will be delivered: As soon as is
+          {`12. Time within which the services will be delivered: As soon as is
           reasonably possible after GUARDCHECK accepts the USER'S application
-          and issues the USER with a password;
+          and issues the USER with a password;`}
           <br />
           13. Return and refund policy: By nature of the service/s, no
           information or data provided to the USER by GUARDCHECK may be
@@ -291,9 +291,9 @@ const page = () => {
           any of the pages on this site in any way whatsoever.
         </p>
         <p>
-          23. No person, business or website may use any technology to search
+          {`23. No person, business or website may use any technology to search
           and/or gain information from GUARDCHECK'S website without its prior
-          written consent.
+          written consent.`}
         </p>
         <p className="m-0">
           24. The address for service for all purposes relating to these terms
@@ -347,11 +347,11 @@ const page = () => {
         <p></p>
         <p className="m-0">29. Customer Privacy policy.</p>
         <p className="ml-5">
-          Guard check shall take all reasonable steps to protect the personal
+          {`Guard check shall take all reasonable steps to protect the personal
           information of users. For the purpose of this clause, "personal
           information" shall be defined as detailed in the Promotion of Access
           to Information Act 2 of 2000 (PAIA). The PAIA may be downloaded from:
-          http://www.polity.org.za/attachment.php?aa_id=3569.
+          http://www.polity.org.za/attachment.php?aa_id=3569.`}
         </p>
         <p></p>
         <p className="m-0">30. Payment options accepted.</p>
