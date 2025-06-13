@@ -1,0 +1,64 @@
+Date : 2025-06-11 07:28:05
+Directory : /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck
+Total : 22 files,  7301 codes, 375 comments, 68 blanks, all 7744 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| JSON               |          2 |      5,917 |          0 |          2 |      5,919 |
+| JavaScript JSX     |          9 |      1,316 |        374 |         37 |      1,727 |
+| Markdown           |          1 |         23 |          0 |         14 |         37 |
+| PostCSS            |          1 |         17 |          0 |          5 |         22 |
+| JavaScript         |          3 |         16 |          1 |          9 |         26 |
+| JSON with Comments |          1 |          7 |          0 |          1 |          8 |
+| XML                |          5 |          5 |          0 |          0 |          5 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                               | files      | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                  |         22 |      7,301 |        375 |         68 |      7,744 |
+| . (Files)                                                                                          |          7 |      5,963 |          1 |         26 |      5,990 |
+| app                                                                                                |         10 |      1,333 |        374 |         42 |      1,749 |
+| app (Files)                                                                                        |          3 |        170 |          0 |         12 |        182 |
+| app/components                                                                                     |          2 |        149 |          0 |          9 |        158 |
+| app/components/footer                                                                              |          1 |         38 |          0 |          3 |         41 |
+| app/components/menubar                                                                             |          1 |        111 |          0 |          6 |        117 |
+| app/contact                                                                                        |          1 |         77 |          0 |          5 |         82 |
+| app/faq                                                                                            |          1 |         12 |        374 |          3 |        389 |
+| app/membersLogin                                                                                   |          1 |         51 |          0 |          5 |         56 |
+| app/register                                                                                       |          1 |        452 |          0 |          5 |        457 |
+| app/terms                                                                                          |          1 |        422 |          0 |          3 |        425 |
+| public                                                                                             |          5 |          5 |          0 |          0 |          5 |
++----------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                           | language           | code       | comment    | blank      | total      |
++----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/README.md                         | Markdown           |         23 |          0 |         14 |         37 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/components/footer/footer.js   | JavaScript JSX     |         38 |          0 |          3 |         41 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/components/menubar/menubar.js | JavaScript JSX     |        111 |          0 |          6 |        117 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/contact/page.js               | JavaScript JSX     |         77 |          0 |          5 |         82 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/faq/page.js                   | JavaScript JSX     |         12 |        374 |          3 |        389 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/globals.css                   | PostCSS            |         17 |          0 |          5 |         22 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/layout.js                     | JavaScript JSX     |         25 |          0 |          5 |         30 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/membersLogin/page.js          | JavaScript JSX     |         51 |          0 |          5 |         56 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/page.js                       | JavaScript JSX     |        128 |          0 |          2 |        130 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/register/page.js              | JavaScript JSX     |        452 |          0 |          5 |        457 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/terms/page.js                 | JavaScript JSX     |        422 |          0 |          3 |        425 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/eslint.config.mjs                 | JavaScript         |         10 |          0 |          5 |         15 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/jsconfig.json                     | JSON with Comments |          7 |          0 |          1 |          8 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/next.config.mjs                   | JavaScript         |          2 |          1 |          2 |          5 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/package-lock.json                 | JSON               |      5,888 |          0 |          1 |      5,889 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/package.json                      | JSON               |         29 |          0 |          1 |         30 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/postcss.config.mjs                | JavaScript         |          4 |          0 |          2 |          6 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/file.svg                   | XML                |          1 |          0 |          0 |          1 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/globe.svg                  | XML                |          1 |          0 |          0 |          1 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/next.svg                   | XML                |          1 |          0 |          0 |          1 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/vercel.svg                 | XML                |          1 |          0 |          0 |          1 |
+| /Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/window.svg                 | XML                |          1 |          0 |          0 |          1 |
+| Total                                                                                              |                    |      7,301 |        375 |         68 |      7,744 |
++----------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+

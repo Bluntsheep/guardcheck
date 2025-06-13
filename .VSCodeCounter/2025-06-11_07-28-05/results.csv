@@ -1,0 +1,24 @@
+"filename", "language", "JSON", "JavaScript", "XML", "JSON with Comments", "Markdown", "PostCSS", "JavaScript JSX", "comment", "blank", "total"
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/README.md", "Markdown", 0, 0, 0, 0, 23, 0, 0, 0, 14, 37
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/components/footer/footer.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 38, 0, 3, 41
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/components/menubar/menubar.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 111, 0, 6, 117
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/contact/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 77, 0, 5, 82
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/faq/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 12, 374, 3, 389
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/globals.css", "PostCSS", 0, 0, 0, 0, 0, 17, 0, 0, 5, 22
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/layout.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 25, 0, 5, 30
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/membersLogin/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 51, 0, 5, 56
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 128, 0, 2, 130
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/register/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 452, 0, 5, 457
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/app/terms/page.js", "JavaScript JSX", 0, 0, 0, 0, 0, 0, 422, 0, 3, 425
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/eslint.config.mjs", "JavaScript", 0, 10, 0, 0, 0, 0, 0, 0, 5, 15
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/jsconfig.json", "JSON with Comments", 0, 0, 0, 7, 0, 0, 0, 0, 1, 8
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/next.config.mjs", "JavaScript", 0, 2, 0, 0, 0, 0, 0, 1, 2, 5
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/package-lock.json", "JSON", 5888, 0, 0, 0, 0, 0, 0, 0, 1, 5889
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/package.json", "JSON", 29, 0, 0, 0, 0, 0, 0, 0, 1, 30
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/postcss.config.mjs", "JavaScript", 0, 4, 0, 0, 0, 0, 0, 0, 2, 6
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/file.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/globe.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/next.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/vercel.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"/Users/sionstearn/Documents/GuardCheck/guardCheckNext/guardcheck/public/window.svg", "XML", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1
+"Total", "-", 5917, 16, 5, 7, 23, 17, 1316, 375, 68, 7744

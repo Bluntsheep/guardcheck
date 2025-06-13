@@ -95,7 +95,7 @@ const Menubar = () => {
                   ? "underline underline-offset-8 decoration-2 decoration-purple-900"
                   : ""
               }`}>
-              Terms & Consitions
+              Terms & Conditions
             </p>
           </Link>
           <p
