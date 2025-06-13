@@ -136,7 +136,7 @@ const Home = () => {
       <Menubar />
       <div className=" px-[12%] mt-12">
         <div>
-          <p className=" font-medium">FAQ'S</p>
+          <p className=" font-medium">{`FAQ'S`}</p>
           <p className=" font-bold text-4xl mt-3">General Questions</p>
         </div>
         <div className="flex justify-between mt-12 gap-10">
