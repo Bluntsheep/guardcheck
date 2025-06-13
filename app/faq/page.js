@@ -10,6 +10,11 @@ const Home = () => {
   const updateTab = (e, index) => {
     console.log(index);
 
+    if (selectedTab === index) {
+      setSelectedTab(0);
+      return;
+    }
+
     setSelectedTab(index);
   };
 
