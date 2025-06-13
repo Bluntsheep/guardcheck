@@ -125,7 +125,7 @@ const Home = () => {
         "Yes, we are just providing information so that the security industry can make an informed decision when hiring their employees.",
     },
     {
-      index: 18,
+      index: 19,
       heading: "How do I contact the team?",
       content: "Please refer to the contact details on our website.",
     },
