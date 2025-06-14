@@ -47,16 +47,55 @@ const Menubar = () => {
           </div>
         </div>
         <div className={`${!menuActive ? "hidden" : ""}`}>
-          <div className=" bg-white">
-            <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
-              Home
-            </p>
-          </div>
-          <div className=" bg-white">
-            <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
-              Home
-            </p>
-          </div>
+          <Link href={"/"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                Home
+              </p>
+            </div>
+          </Link>
+          <Link href={"/faq"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                FAQ
+              </p>
+            </div>
+          </Link>
+          <Link href={"/membersLogin"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                Member Login
+              </p>
+            </div>
+          </Link>
+          <Link href={"/register"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                Register
+              </p>
+            </div>
+          </Link>
+          <Link href={"/contact"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                Contact
+              </p>
+            </div>
+          </Link>
+          <Link href={"/terms"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                Terms & Conditions
+              </p>
+            </div>
+          </Link>
+          <Link href={"/POPI"}>
+            <div className=" bg-white">
+              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+                POPI
+              </p>
+            </div>
+          </Link>
         </div>
       </div>
 
