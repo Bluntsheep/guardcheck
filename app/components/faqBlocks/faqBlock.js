@@ -3,7 +3,7 @@ import { FaArrowDown, FaChevronDown, FaChevronRight } from "react-icons/fa";
 
 const FaqBlock = ({ selectedTab, updateTab, index, heading, content }) => {
   return (
-    <div className=" w-full shadow-lg mb-10">
+    <div className=" w-full shadow-lg mb-3 md:mb-10">
       <div
         onClick={(e) => updateTab(e, index)}
         className=" flex bg-[#167BA9] p-4 text-white font-medium justify-between">

@@ -7,8 +7,8 @@ const page = () => {
     <div>
       <Menubar />
 
-      <div className="flex flex-col items-center justify-center  py-18 bg-[#F9F9F9]">
-        <div className=" flex gap-10 items-center justify-center">
+      <div className="flex flex-col items-center justify-center  py-18 mt-3 bg-[#F9F9F9]">
+        <div className=" flex gap-10 items-center px-8 justify-center">
           <div className="">
             <label>
               <input type="checkbox" />
@@ -22,7 +22,7 @@ const page = () => {
           </div>
         </div>
         <div>
-          <div class=" flex flex-col gap-6 content-box px-[15%] text-[#888888] my-16">
+          <div class=" flex flex-col gap-6 content-box px-6 md:px-[15%] text-[#888888] my-16">
             <p>
               {`1. GUARDCHECK.COM CC ("GUARDCHECK") provides the information and
               data contained on this website to users (the "USER") subject to

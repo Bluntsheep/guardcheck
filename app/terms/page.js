@@ -6,10 +6,10 @@ const page = () => {
   return (
     <div>
       <Menubar />
-      <div className="flex flex-col items-center justify-center  py-18 bg-[#F9F9F9">
-        <p className=" text-6xl font-bold">Terms & Conditions</p>
+      <div className="flex flex-col items-center justify-center py-18 bg-[#F9F9F9]">
+        <p className=" text-6xl font-bold text-center">Terms & Conditions</p>
       </div>
-      <div class=" flex flex-col gap-6 content-box px-[15%] text-[#888888] mb-10">
+      <div className=" flex flex-col gap-6 content-box px-6 md:px-[15%] text-[#888888] mb-10">
         <p className="">
           {`1. GUARDCHECK.COM CC ("GUARDCHECK") provides the information and data
           contained on this website to users (the "USER") subject to the terms

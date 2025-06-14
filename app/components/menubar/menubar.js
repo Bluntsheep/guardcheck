@@ -3,10 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { FaBars, FaHamburger } from "react-icons/fa";
 
 const Menubar = () => {
   const [selectedTab, setSelectedTab] = useState();
   const router = useRouter();
+  const [menuActive, setMenuActive] = useState(false);
+
+  const handleMenu = () => {
+    setMenuActive(!menuActive);
+    console.log(menuActive);
+  };
 
   const tabChange = (e, tab) => {
     e.preventDefault();
@@ -16,7 +23,7 @@ const Menubar = () => {
 
   return (
     <div>
-      <div className="bg-[#137AA7] px-[10%] text-white flex justify-between items-center">
+      <div className="bg-[#137AA7] px-[10%] text-white justify-between items-center shadow-2xl hidden md:flex">
         <div>
           <p>Contact Us: 012-492-9089 | info@guardcheck.com</p>
         </div>
@@ -24,14 +31,43 @@ const Menubar = () => {
           <p>Yearly Fee of R 2850.00 no hidden costs</p>
         </div>
       </div>
-      <div className=" px-[12%] py-2 flex bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
+
+      <div className="sm:absolute shadow-lg border border-gray-300 ">
+        <div className="md:hidden flex justify-between items-center bg-[#137AA7] px-4 py-2 text-white shadow-2xl">
+          <Image
+            src="/guard_check_logo.jpeg" // Path to your image in the public folder
+            alt="Description of image"
+            width={80} // Desired width in pixels
+            height={80} // Desired height in pixels
+          />
+          <div>
+            <button onClick={handleMenu} className="text-white text-2xl">
+              <FaBars />
+            </button>
+          </div>
+        </div>
+        <div className={`${!menuActive ? "hidden" : ""}`}>
+          <div className=" bg-white">
+            <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+              Home
+            </p>
+          </div>
+          <div className=" bg-white">
+            <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+              Home
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="hidden md:flex px-[12%] py-2 bg-white shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)]">
         <Image
           src="/guard_check_logo.jpeg" // Path to your image in the public folder
           alt="Description of image"
           width={150} // Desired width in pixels
           height={150} // Desired height in pixels
         />
-        <div className="flex gap-10 items-end w-full text-[#3E4161] cursor-pointer">
+        <div className=" flex gap-10 items-end w-full text-[#3E4161] cursor-pointer ">
           <div className=" flex-grow " />
           <Link href={"/"}>
             <p

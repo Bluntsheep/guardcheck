@@ -7,10 +7,10 @@ const Contact = () => {
   return (
     <div>
       <Menubar />
-      <div className="flex flex-col items-center justify-center py-18 bg-[#FAFAFA]">
-        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-10 my-5 w-[50%]">
+      <div className="flex flex-col items-center justify-center p-6 py-18 mt-3 bg-[#FAFAFA]">
+        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-10 my-5 w-[90%] md:w-[50%]">
           <p className=" font-bold text-3xl mb-10">CONTACT US</p>
-          <div className=" text-black flex gap-4 w-full">
+          <div className=" text-black flex md:flex-row flex-col gap-4 w-full">
             <input className=" bg-white p-3 my-2 w-full " placeholder="Name" />
             <input className=" bg-white p-3 my-2 w-full " placeholder="Email" />
           </div>
@@ -26,16 +26,16 @@ const Contact = () => {
               placeholder="Message"
             />
           </div>
-          <button className="bg-[#167BA9] rounded-2xl text-white p-2 my-2 w-[20%]">
+          <button className="bg-[#167BA9] rounded-2xl text-white p-2 my-2 w-[90%] md:w-[20%]">
             Submit Now
           </button>
         </div>
       </div>
 
-      <div className="flex flex-col p-32  bg-white w-full">
+      <div className="flex flex-col p-6 md:p-32  bg-white w-full">
         <p className=" font-bold text-3xl mb-4">COMPANY INFORMATION</p>
-        <div className=" flex justify-around w-full gap-10">
-          <div className=" flex gap-6 bg-white p-6 shadow-lg mt-8 justify-center items-center w-full hover:shadow-xs">
+        <div className=" flex flex-col md:flex-row md:justify-around w-full gap-10">
+          <div className=" flex  gap-6 bg-white p-6 shadow-lg mt-8 justify-center items-center w-full hover:shadow-xs">
             <div>
               <FaLocationDot color="#167BA9" size={50} />
             </div>

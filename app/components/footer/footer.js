@@ -2,25 +2,25 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className=" bg-[#012533] px-32 py-16 flex gap-6 justify-around text-md ">
-      <div className="text-white p-5 w-4/12">
-        <p className=" mb-6 text-2xl font-bold">OUR PHILOSOPHY</p>
+    <div className=" bg-[#012533] p-3 md:px-32 py-16 flex flex-col md:flex-row gap-6 justify-around text-md ">
+      <div className="text-white p-5 md:w-4/12">
+        <p className=" mb-2 md:mb-6 text-2xl font-bold">OUR PHILOSOPHY</p>
         <p className=" text-[#888888]">
           Information is power. Blacklist guards who bring disrepute to your
           company and the industry, check guards who you would like to employ
           and receive CVs of guards looking for work online..
         </p>
       </div>
-      <div className="text-white p-5 w-4/12">
-        <p className=" mb-6 text-2xl font-bold">ABOUT OUR COMPANY</p>
+      <div className="text-white p-5 md:w-4/12">
+        <p className=" mb-2 md:mb-6 text-2xl font-bold">ABOUT OUR COMPANY</p>
         <p className=" text-[#888888]">
           Information is power. Blacklist guards who bring disrepute to your
           company and the industry, check guards who you would like to employ
           and receive CVs of guards looking for work online..
         </p>
       </div>
-      <div className="text-white p-2 flex flex-col gap-1 justify-around">
-        <p className=" mb-6 text-2xl font-bold">Contact Us</p>
+      <div className="text-white p-5 flex flex-col gap-1 justify-around">
+        <p className=" mb-2 md:mb-6 text-2xl font-bold">Contact Us</p>
         <div>
           <p className=" text-sm">012-492-9089</p>
         </div>

@@ -9,11 +9,13 @@ export default function Home() {
       <Menubar />
       <div className="flex flex-col items-center justify-center  py-18 bg-[#F9F9F9">
         <Image src="/labournet.png" alt="" width={300} height={2000} />
-        <p className=" text-5xl font-bold mt-8">Welcome to Guard Check</p>
+        <p className=" text-3xl  md:text-5xl font-bold mt-8">
+          Welcome to Guard Check
+        </p>
         <p className=" text-1xl text-red-600 mt-4">
           Warning: Security Industry Only!
         </p>
-        <p className="text-center text-slate-400 font-medium mt-4">
+        <p className="text-center text-slate-400 font-medium mt-4 p-3">
           Information is power. Blacklist guards who bring disrepute to your
           company and the
           <br /> industry, check guards who you would like to employ and receive
@@ -21,9 +23,9 @@ export default function Home() {
           <br /> for work online.
         </p>
       </div>
-      <div className="flex flex-col items-center justify-center  py-12 mt-16 bg-[#FAFAFA]">
+      <div className="flex flex-col items-center justify-center py-3 md:py-12 mt-16 bg-[#FAFAFA]">
         <div className="flex">
-          <div className="flex flex-col items-center justify-center p-32 bg-[#167BA9]">
+          <div className="flex flex-col items-center justify-center p-3 md:p-32 bg-[#167BA9]">
             <div className=" bg-white p-8 rounded-full">
               <FaRegCopy color="grey" size={100} />
             </div>
@@ -112,7 +114,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col items-center justify-center mt-16 bg-[#808080] px-36 py-24">
+      <div className="flex flex-col items-center justify-center mt-16 bg-[#808080] px-6 md:px-36 py-6 md:py-24">
         <p className=" text-5xl mb-8 text-[#212529] font-bold">About Us</p>
         <p className="text-white text-center mt-4 text-lg">
           All members of guardcheck.com will be able to receive information on

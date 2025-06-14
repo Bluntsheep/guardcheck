@@ -139,12 +139,12 @@ const Home = () => {
   return (
     <div class="row clearfix">
       <Menubar />
-      <div className=" px-[12%] mt-12">
+      <div className=" p-5 md:px-[12%] mt-12">
         <div>
           <p className=" font-medium">{`FAQ'S`}</p>
           <p className=" font-bold text-4xl mt-3">General Questions</p>
         </div>
-        <div className="flex justify-between mt-12 gap-10">
+        <div className="flex flex-col md:flex-row justify-between mt-12 md:gap-10">
           <div className="w-full">
             {faqInformationLeft.map((item) => (
               <FaqBlock

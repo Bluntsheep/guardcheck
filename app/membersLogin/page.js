@@ -6,8 +6,8 @@ const page = () => {
   return (
     <div>
       <Menubar />
-      <div className="flex flex-col items-center justify-center py-18 bg-[#FAFAFA]">
-        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-10 my-5 w-[40%]">
+      <div className="flex flex-col items-center justify-center py-18 mt-6 bg-[#FAFAFA]">
+        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-3 md:p-10 my-5 w-[90%] md:w-[40%]">
           <p className=" font-bold text-3xl mb-10">LOGIN HERE</p>
 
           <div className=" w-full">
@@ -22,7 +22,7 @@ const page = () => {
               placeholder="Enter Password"
             />
           </div>
-          <div className=" flex justify-between w-full mt-4">
+          <div className=" flex flex-col md:flex-row justify-between w-full mt-4">
             <div className=" flex flex-col ">
               <button className="bg-[#167BA9] rounded-2xl text-white p-2 my-2 ">
                 Login Now
