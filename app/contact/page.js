@@ -8,7 +8,7 @@ const Contact = () => {
     <div>
       <Menubar />
       <div className="flex flex-col items-center justify-center p-6 py-18 mt-3 bg-[#FAFAFA]">
-        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-10 my-5 w-[90%] md:w-[50%]">
+        <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-3 md:p-10 my-5 w-[100%] md:w-[50%]">
           <p className=" font-bold text-3xl mb-10">CONTACT US</p>
           <div className=" text-black flex md:flex-row flex-col gap-4 w-full">
             <input className=" bg-white p-3 my-2 w-full " placeholder="Name" />
@@ -35,7 +35,7 @@ const Contact = () => {
       <div className="flex flex-col p-6 md:p-32  bg-white w-full">
         <p className=" font-bold text-3xl mb-4">COMPANY INFORMATION</p>
         <div className=" flex flex-col md:flex-row md:justify-around w-full gap-10">
-          <div className=" flex  gap-6 bg-white p-6 shadow-lg mt-8 justify-center items-center w-full hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 shadow-md mt-8   w-full hover:shadow-xs">
             <div>
               <FaLocationDot color="#167BA9" size={50} />
             </div>
