@@ -89,7 +89,7 @@ const Menubar = () => {
               </p>
             </div>
           </Link>
-          <Link href={"/POPI"}>
+          <Link href={"/popi"}>
             <div className=" bg-white">
               <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
                 POPI
@@ -174,7 +174,7 @@ const Menubar = () => {
             </p>
           </Link>
           <p
-            onClick={(e) => tabChange(e, "POPI")}
+            onClick={(e) => tabChange(e, "popi")}
             className={` hover:underline underline-offset-8 decoration-2 decoration-purple-900 ${
               selectedTab === "POPI"
                 ? "underline underline-offset-8 decoration-2 decoration-purple-900"

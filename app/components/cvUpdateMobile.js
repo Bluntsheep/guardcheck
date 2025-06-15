@@ -15,7 +15,7 @@ const CvUpdatemobile = () => {
             <p>GUARD CV</p>
           </div>
         </div>
-        <div>
+        <div className=" w-full items-center justify-center align-middle">
           <div className=" w-full mx-8">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
@@ -41,20 +41,37 @@ const CvUpdatemobile = () => {
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Phone"
             />
-            <input
-              className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
-              placeholder="Region"
-            />
+            <select
+              className=" bg-slate-200 p-3 text-lg w-[80%] mt-3"
+              placeholder="Select Region"
+              id="fruit"
+              name="fruit">
+              <option value="Select Region">Select Region</option>
+              <option value="Eastern Cape">Eastern Cape</option>
+              <option value="Free State">Free State</option>
+              <option value="Gauteng">Gauteng</option>
+              <option value="Kwazulu-Natal">Kwazulu-Natal</option>
+              <option value="Mpumalanga">Mpumalanga</option>
+              <option value="Northen Cape">Northen Cape</option>
+              <option value="Limpopo">Limpopo</option>
+              <option value="North West Province">North West Province</option>
+              <option value="Western Cape">Western Cape</option>
+            </select>
           </div>
           <div className="w-full mx-8">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Town"
             />
-            <input
-              className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
-              placeholder="Select Highest Grade"
-            />
+            <select
+              className=" bg-slate-200 p-3 text-lg w-[80%] mt-3"
+              placeholder="Select Highest Grade">
+              <option value="Select Highest Grade">Select Highest Grade</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+            </select>
           </div>
           <div className="flex w-full mt-5 gap-8 justify-center text-xs">
             <div>
