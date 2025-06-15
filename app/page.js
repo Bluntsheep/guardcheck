@@ -3,7 +3,7 @@ import Menubar from "./components/menubar/menubar";
 import { FaRegCopy } from "react-icons/fa";
 import Footer from "./components/footer/footer";
 import CvUpdateFull from "./components/cvUpdateFull";
-import CvUpdatemobile from "./components/cvUpdatemobile";
+import CvUpdatemobile from "./components/cvUpdateMobile";
 
 export default function Home() {
   return (
