@@ -10,7 +10,6 @@ export default function Home() {
     <div>
       <Menubar />
       <div className="flex flex-col items-center justify-center  py-18 bg-[#F9F9F9">
-        <Image src="/labournet.png" alt="" width={300} height={2000} />
         <p className=" text-3xl  md:text-5xl font-bold mt-8">
           Welcome to Guard Check
         </p>

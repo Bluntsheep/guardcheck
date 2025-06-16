@@ -253,8 +253,7 @@ const page = () => {
           9. Description of main characteristics of the service/s offered by
           GUARDCHECK (View Brochures -Hyperlink)
           <br />
-          10. Manner of payment: electronically by credit card, electronic bank
-          transfer, direct bank deposit or cheque;
+          10. Manner of payment: electronic bank transfer, direct bank deposit;
           <br />
           11. The terms of the agreement: The terms of the Agreement between the
           USER and GUARDCHECK is governed by these terms, the application form
@@ -354,40 +353,7 @@ const page = () => {
           http://www.polity.org.za/attachment.php?aa_id=3569.`}
         </p>
         <p></p>
-        <p className="m-0">30. Payment options accepted.</p>
-        <p className="ml-5">
-          Payment may be made via Visa, MasterCard, Diners or American Express
-          credit cards or by bank transfer in to the Guardcheck bank account,the
-          details of which will be provided on request.
-        </p>
-        <p></p>
-        <p className="m-0">31. Credit card acquiring ands ecurity.</p>
-        <p className="ml-5">
-          Credit card transactions will be acquired for Guardcheck via
-          PayGate(Pty) Ltd who are the approved payment gateway for all South
-          African Acquiring Banks. PayGate uses the strictest form of
-          encryption, namely Secure Socket Layer3 (SSL3)and no credit card
-          details are stored on the website.Users may go to www.paygate.co.za to
-          view their security certificate and security policy.
-        </p>
-        <p></p>
-        <p className="m-0">32. Customer details separate from card details.</p>
-        <p className="ml-5">
-          Customer details will be stored by Guardcheck separately from card
-          details which are entered by the client on PayGate’s securesite.Form
-          oredetailon PayGate refer to www.paygate.co.za.
-        </p>
-        <p></p>
-        <p className="m-0">
-          33. Merchant Out let country and transaction currency.
-        </p>
-        <p className="ml-5">
-          The merchant out let country at the time of presenting payment options
-          to the card holder is South Africa. Transaction currency is South
-          African Rand(ZAR).
-        </p>
-        <p></p>
-        <p className="m-0">34. Responsibility.</p>
+        <p className="m-0">30. Responsibility.</p>
         <p className="ml-5">
           Guardcheck takes responsibility for all aspects relating to the
           transaction including sale of goods and services sold on this website,
@@ -395,7 +361,7 @@ const page = () => {
           goods.
         </p>
         <p></p>
-        <p className="m-0">35. Country of domicile.</p>
+        <p className="m-0">31. Country of domicile.</p>
         <p className="ml-5">
           This website is governed by the laws of South Africa and Guardcheck
           chooses as its domicilium citandi etexecutandi for all purposes under
@@ -403,14 +369,14 @@ const page = () => {
           documents or communication of what so ever nature.
         </p>
         <p></p>
-        <p className="m-0">36. Variation.</p>
+        <p className="m-0">32. Variation.</p>
         <p className="ml-5">
           Guardcheck may, in its sole discretion, change this agreement or any
           part there of at any time without notice.
         </p>
         <p></p>
         <p></p>
-        <p className="m-0">37. Guardcheck contact details.</p>
+        <p className="m-0">33. Guardcheck contact details.</p>
         <p className="ml-5">
           Postnet Suite 103 , Private Bag X0003, Ifafi, 0260
         </p>
