@@ -1,22 +1,48 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
 
-const page = () => {
+const Registration = () => {
+  const [error, setError] = useState();
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleSubmit = () => {
+    if (isChecked === false) {
+      setError(true);
+      setTimeout(() => setError(false), 2000);
+    } else {
+      console.log("Register page");
+    }
+  };
+
   return (
     <div>
       <Menubar />
 
       <div className="flex flex-col items-center justify-center  py-18 mt-3 bg-[#F9F9F9]">
+        <p
+          className={` text-red-600 text-xs text-center font-medium mb-3 p-5 ${
+            error ? "" : "hidden"
+          }`}>
+          To use this service, you must agree to the Terms & Conditions. Click
+          below to accept.
+        </p>
         <div className=" flex gap-10 items-center px-8 justify-center">
           <div className="">
             <label>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={isChecked}
+                onChange={(e) => setIsChecked(e.target.checked)}
+              />
               <span className="ml-3">I agree to the terms and conditions</span>
             </label>
           </div>
           <div>
-            <button className="bg-[#167BA9] rounded-2xl text-white p-4 px-8 ">
+            <button
+              onClick={handleSubmit}
+              className="bg-[#167BA9] rounded-2xl text-white p-4 px-8 ">
               Submit
             </button>
           </div>
@@ -453,4 +479,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Registration;

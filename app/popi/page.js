@@ -12,12 +12,12 @@ const PopiManual = () => {
           <div>
             <FaRegArrowAltCircleDown color="#167BA9" size={50} />
           </div>
-          <div className=" ">
-            <div>
+          <div>
+            <a href="/popi.pdf " download>
               <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
                 Popi Manual
               </p>
-            </div>
+            </a>
           </div>
         </div>
       </div>
