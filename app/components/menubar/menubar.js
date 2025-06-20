@@ -48,50 +48,50 @@ const Menubar = () => {
         </div>
         <div className={`${!menuActive ? "hidden" : ""}`}>
           <Link href={"/"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 Home
               </p>
             </div>
           </Link>
           <Link href={"/faq"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 FAQ
               </p>
             </div>
           </Link>
           <Link href={"/membersLogin"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 Member Login
               </p>
             </div>
           </Link>
           <Link href={"/register"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 Register
               </p>
             </div>
           </Link>
           <Link href={"/contact"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 Contact
               </p>
             </div>
           </Link>
           <Link href={"/terms"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 Terms & Conditions
               </p>
             </div>
           </Link>
           <Link href={"/popi"}>
-            <div className=" bg-white">
-              <p className=" text-2xl p-2 pl-2 font-medium text-slate-900 border-b-1">
+            <div className=" bg-white border-b-[1px] border-slate-300">
+              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
                 POPI
               </p>
             </div>

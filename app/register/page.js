@@ -2,17 +2,19 @@
 import React, { useState } from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
+import { useRouter } from "next/navigation";
 
 const Registration = () => {
   const [error, setError] = useState();
   const [isChecked, setIsChecked] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = () => {
     if (isChecked === false) {
       setError(true);
       setTimeout(() => setError(false), 2000);
     } else {
-      console.log("Register page");
+      router.push("/registrationdetails");
     }
   };
 

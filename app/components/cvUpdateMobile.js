@@ -4,8 +4,8 @@ import { FaRegCopy } from "react-icons/fa";
 const CvUpdatemobile = () => {
   return (
     <div className=" flex md:hidden bg-[#FAFAFA] w-100%">
-      <div className=" w-90% p-3 w-full">
-        <div className="flex bg-[#167BA9] justify-around p-5">
+      <div className="w-full">
+        <div className="flex bg-[#167BA9] justify-around p-5 mb-5">
           <div className=" bg-white p-8 rounded-full">
             <FaRegCopy color="grey" size={50} />
           </div>
@@ -15,8 +15,8 @@ const CvUpdatemobile = () => {
             <p>GUARD CV</p>
           </div>
         </div>
-        <div className=" w-full items-center justify-center align-middle">
-          <div className=" w-full mx-8">
+        <div className=" items-center">
+          <div className=" w-full text-center">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Name"
@@ -26,7 +26,7 @@ const CvUpdatemobile = () => {
               placeholder="Surname"
             />
           </div>
-          <div className="w-full mx-8">
+          <div className="w-full text-center">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Id Number"
@@ -36,7 +36,7 @@ const CvUpdatemobile = () => {
               placeholder="PSIR / SOB Number"
             />
           </div>
-          <div className="w-full mx-8">
+          <div className="w-full text-center">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Phone"
@@ -58,7 +58,7 @@ const CvUpdatemobile = () => {
               <option value="Western Cape">Western Cape</option>
             </select>
           </div>
-          <div className="w-full mx-8">
+          <div className="w-full text-center">
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
               placeholder="Town"
@@ -73,7 +73,7 @@ const CvUpdatemobile = () => {
               <option value="D">D</option>
             </select>
           </div>
-          <div className="flex w-full mt-5 gap-8 justify-center text-xs">
+          <div className="flex w-full mt-5 gap-8 justify-center text-xs ">
             <div>
               <label>
                 <input type="radio" />
@@ -97,16 +97,16 @@ const CvUpdatemobile = () => {
           <div className=" text-xs mt-5 pl-3">
             <p>Guard Type:</p>
           </div>
-          <div className="text-xs px-5 mt-5 flex gap-2 justify-around">
+          <div className="text-xs px-5 mt-5 flex gap-2 justify-around text-center">
             <label className="ml-2">
               <input type="checkbox" name="Security guard" />
-              <span className="ml-2">Security guard</span>
+              <span className="">Security guard</span>
             </label>
-            <label className="ml-2">
+            <label className="">
               <input type="checkbox" name="Security guard" />
-              <span className="ml-2">Armed response</span>
+              <span className="">Armed response</span>
             </label>
-            <label className="ml-2">
+            <label className="">
               <input type="checkbox" name="Security guard" />
               <span className="ml-2">Control room</span>
             </label>

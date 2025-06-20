@@ -7,7 +7,7 @@ const PopiManual = () => {
   return (
     <div>
       <Menubar />
-      <div className="w-full flex justify-around p-10">
+      <div className="w-full flex justify-around p-10 pt-10">
         <div className="flex gap-6 bg-white p-8 self-center shadow-md mt-8 hover:shadow-xs md:w-[40%] justify-center">
           <div>
             <FaRegArrowAltCircleDown color="#167BA9" size={50} />
