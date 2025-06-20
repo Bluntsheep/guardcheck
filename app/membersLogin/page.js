@@ -1,8 +1,16 @@
+"use client";
 import React from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
+import { useRouter } from "next/navigation";
 
-const page = () => {
+const MembersLogin = () => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/payment");
+  };
+
   return (
     <div>
       <Menubar />
@@ -24,7 +32,9 @@ const page = () => {
           </div>
           <div className=" flex flex-col md:flex-row justify-between w-full mt-4">
             <div className=" flex flex-col ">
-              <button className="bg-[#167BA9] rounded-2xl text-white p-2 my-2 ">
+              <button
+                onClick={handleClick}
+                className="bg-[#167BA9] rounded-2xl text-white p-2 my-2 ">
                 Login Now
               </button>
               <div className="mt-3">
@@ -52,4 +62,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default MembersLogin;
