@@ -23,8 +23,8 @@ const Dashboard = () => {
     <div className=" bg-[#FFFFFF]">
       <Menubar />
       <div className=" my-[3%] cursor-default">
-        <div className="flex text-center my-3 gap-10 justify-center px-[5%]">
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+        <div className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div className="  gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaUserAltSlash color="#167BA9" size={50} />
             </div>
@@ -34,7 +34,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaUsers color="#167BA9" size={50} />
             </div>
@@ -44,7 +44,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaUserSecret color="#167BA9" size={50} />
             </div>
@@ -55,8 +55,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="flex text-center my-3 gap-10 justify-center px-[5%]">
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+        <div className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaUserSecret color="#167BA9" size={50} />
             </div>
@@ -71,7 +71,7 @@ const Dashboard = () => {
               </div>
             </a>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaFileShield color="#167BA9" size={50} />
             </div>
@@ -81,7 +81,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaPen color="#167BA9" size={50} />
             </div>
@@ -94,8 +94,8 @@ const Dashboard = () => {
         </div>
         <div
           onClick={() => handleClick("changepassword")}
-          className="flex text-center my-3 gap-10 justify-center px-[5%]">
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 w-3/12 hover:shadow-xs">
+          className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
             <div>
               <FaKey color="#167BA9" size={50} />
             </div>

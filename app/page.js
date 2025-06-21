@@ -1,12 +1,26 @@
+"use client";
 import Menubar from "./components/menubar/menubar";
 import Footer from "./components/footer/footer";
 import CvUpdateFull from "./components/cvUpdateFull";
 import CvUpdatemobile from "./components/cvUpdateMobile";
 
 export default function Home() {
+  const testDB = async () => {
+    try {
+      const res = await fetch("/api/testdb");
+      if (!res.ok) throw new Error("Failed to fetch data");
+
+      const data = await res.json();
+      console.log("Fetched MySQL data:", data);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
   return (
     <div>
       <Menubar />
+      <button onClick={testDB}>Test Connection</button>
       <div className="flex flex-col items-center justify-center  py-18 bg-[#F9F9F9">
         <p className=" text-3xl  md:text-5xl font-bold mt-8">
           Welcome to Guard Check
