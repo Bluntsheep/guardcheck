@@ -20,8 +20,6 @@ const Registration = () => {
 
   return (
     <div>
-      <Menubar />
-
       <div className="flex flex-col items-center justify-center  py-18 mt-3 bg-[#F9F9F9]">
         <p
           className={` text-red-600 text-xs text-center font-medium mb-3 p-5 ${

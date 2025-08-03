@@ -5,7 +5,6 @@ import Footer from "../components/footer/footer";
 const ViewCv = () => {
   return (
     <div>
-      <Menubar />
       <div className=" text-center my-28">
         <p className=" text-5xl font-bold mb-8">VIEW CV</p>
         <select className=" shadow-xl bg-white w-[50%] p-6">

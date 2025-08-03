@@ -12,7 +12,6 @@ const Payments = () => {
 
   return (
     <div>
-      <Menubar />
       <div className=" text-center my-28">
         <p className=" text-5xl font-bold">Payment:</p>
         <p className=" text-slate-500 mt-6 text-lg">EFT Payment</p>
@@ -34,11 +33,11 @@ const Payments = () => {
         </p>
       </div>
       <div className=" my-5 items-center align-middle text-center">
-        <button
+        {/* <button
           onClick={handleLogin}
           className=" p-3 bg-blue-400 font-bold round-lg text-white">
           Login
-        </button>
+        </button> */}
       </div>
 
       <Footer />

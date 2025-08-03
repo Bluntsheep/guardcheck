@@ -5,7 +5,6 @@ import Footer from "../components/footer/footer";
 const page = () => {
   return (
     <div>
-      <Menubar />
       <div className="flex flex-col items-center justify-center py-18 bg-[#F9F9F9]">
         <p className=" text-6xl font-bold text-center">Terms & Conditions</p>
       </div>

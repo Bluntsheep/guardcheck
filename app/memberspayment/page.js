@@ -5,7 +5,6 @@ import Footer from "../components/footer/footer";
 const Memberspayment = () => {
   return (
     <div>
-      <Menubar />
       <div className=" text-center my-28">
         <p className=" text-5xl font-bold">Welcome to Guard Check:</p>
         <p className=" text-slate-500 mt-6 text-lg">

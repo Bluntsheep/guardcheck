@@ -138,7 +138,6 @@ const Home = () => {
 
   return (
     <div class="row clearfix">
-      <Menubar />
       <div className=" p-5 md:px-[12%] mt-12">
         <div>
           <p className=" font-medium">{`FAQ'S`}</p>

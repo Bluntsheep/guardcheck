@@ -2,13 +2,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaBars, FaHamburger } from "react-icons/fa";
 
 const Menubar = () => {
   const [selectedTab, setSelectedTab] = useState();
   const router = useRouter();
   const [menuActive, setMenuActive] = useState(false);
+  const [currentUser, setCurrentUser] = useState("");
+  const [userStatus, setUserStatus] = useState(null);
+  const [loginItems, setLoginItems] = useState("login");
 
   const handleMenu = () => {
     setMenuActive(!menuActive);
@@ -20,6 +23,41 @@ const Menubar = () => {
     setSelectedTab(tab);
     router.push(`/${tab}`);
   };
+
+  useEffect(() => {
+    // Check if we're in browser environment
+    if (typeof window !== "undefined") {
+      try {
+        const user = sessionStorage.getItem("currentUser");
+
+        if (user) {
+          const userData = JSON.parse(user);
+          console.log("this is the current user:::", userData);
+
+          // Set current user - assuming the structure is either userData.username or userData.user.username
+          if (userData.user && userData.user.username) {
+            setCurrentUser(userData.user.username);
+            setUserStatus(userData.user.active);
+          } else if (userData.username) {
+            setCurrentUser(userData.username);
+            setUserStatus(userData.active);
+          }
+
+          // Set login items based on user status
+          if (userData.user?.active === 1 || userData.active === 1) {
+            setLoginItems("/dashboard");
+          } else {
+            setLoginItems("/payments");
+          }
+        } else {
+          setLoginItems("/login");
+        }
+      } catch (error) {
+        console.error("Error parsing user data from sessionStorage:", error);
+        setLoginItems("/login");
+      }
+    }
+  }, []);
 
   return (
     <div>
@@ -61,20 +99,26 @@ const Menubar = () => {
               </p>
             </div>
           </Link>
-          <Link href={"/membersLogin"}>
+          <Link href={currentUser ? loginItems : "/membersLogin"}>
             <div className=" bg-white border-b-[1px] border-slate-300">
               <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
-                Member Login
+                {!currentUser
+                  ? "Member Login"
+                  : `${currentUser} ${
+                      userStatus === 1 ? "(Active)" : "(Inactive)"
+                    }`}
               </p>
             </div>
           </Link>
-          <Link href={"/register"}>
-            <div className=" bg-white border-b-[1px] border-slate-300">
-              <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
-                Register
-              </p>
-            </div>
-          </Link>
+          {!currentUser && (
+            <Link href={"/register"}>
+              <div className={`bg-white border-b-[1px] border-slate-300  `}>
+                <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
+                  Register
+                </p>
+              </div>
+            </Link>
+          )}
           <Link href={"/contact"}>
             <div className=" bg-white border-b-[1px] border-slate-300">
               <p className=" text-xl p-2 pl-4 font-medium text-slate-600 ">
@@ -129,7 +173,7 @@ const Menubar = () => {
             }`}>
             FAQ
           </p>
-          <Link href={"/membersLogin"}>
+          <Link href={currentUser ? loginItems : "/membersLogin"}>
             <p
               onClick={(e) => tabChange(e, "membersLogin")}
               className={` hover:underline underline-offset-8 decoration-2 decoration-purple-900 ${
@@ -137,20 +181,26 @@ const Menubar = () => {
                   ? "underline underline-offset-8 decoration-2 decoration-purple-900"
                   : ""
               }`}>
-              Member Login
+              {!currentUser
+                ? "Member Login"
+                : `${currentUser} ${
+                    userStatus === 1 ? "(Active)" : "(Inactive)"
+                  }`}
             </p>
           </Link>
-          <Link href={"register"}>
-            <p
-              onClick={(e) => tabChange(e, "register")}
-              className={` hover:underline underline-offset-8 decoration-2 decoration-purple-900 ${
-                selectedTab === "Register"
-                  ? "underline underline-offset-8 decoration-2 decoration-purple-900"
-                  : ""
-              }`}>
-              Register
-            </p>
-          </Link>
+          {!currentUser && (
+            <Link href={"register"}>
+              <p
+                onClick={(e) => tabChange(e, "register")}
+                className={` hover:underline underline-offset-8 decoration-2 decoration-purple-900 ${
+                  selectedTab === "Register"
+                    ? "underline underline-offset-8 decoration-2 decoration-purple-900"
+                    : ""
+                }`}>
+                Register
+              </p>
+            </Link>
+          )}
           <Link href={"/contact"}>
             <p
               onClick={(e) => tabChange(e, "contact")}

@@ -21,10 +21,9 @@ const Dashboard = () => {
   };
   return (
     <div className=" bg-[#FFFFFF]">
-      <Menubar />
-      <div className=" my-[3%] cursor-default">
-        <div className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
-          <div className="  gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+      <div className=" my-[3%] cursor-default align-middle justify-center object-center">
+        <div className="flex-wrap md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div className=" flex  gap-6 bg-white p-8 md:w-3/12 shadow-md items-center mt-8  hover:shadow-xs">
             <div>
               <FaUserAltSlash color="#167BA9" size={50} />
             </div>
@@ -34,7 +33,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md items-center mt-8 hover:shadow-xs">
             <div>
               <FaUsers color="#167BA9" size={50} />
             </div>
@@ -44,7 +43,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md items-center mt-8 hover:shadow-xs">
             <div>
               <FaUserSecret color="#167BA9" size={50} />
             </div>
@@ -55,8 +54,8 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+        <div className="flex-wrap  md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md items-center mt-8 hover:shadow-xs">
             <div>
               <FaUserSecret color="#167BA9" size={50} />
             </div>
@@ -71,7 +70,7 @@ const Dashboard = () => {
               </div>
             </a>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md items-center mt-8 hover:shadow-xs">
             <div>
               <FaFileShield color="#167BA9" size={50} />
             </div>
@@ -81,7 +80,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md align-center mt-8  hover:shadow-xs">
             <div>
               <FaPen color="#167BA9" size={50} />
             </div>
@@ -92,17 +91,17 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div
-          onClick={() => handleClick("changepassword")}
-          className="flex-wrap flex-col md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
-          <div className=" flex gap-6 bg-white p-8 shadow-md items-center mt-8 md:w-3/12 hover:shadow-xs">
-            <div>
-              <FaKey color="#167BA9" size={50} />
-            </div>
-            <div>
-              <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
-                Change Password
-              </p>
+        <div className="flex-wrap  md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
+          <div onClick={() => handleClick("changepassword")}>
+            <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md align-center mt-8  hover:shadow-xs">
+              <div>
+                <FaKey color="#167BA9" size={50} />
+              </div>
+              <div>
+                <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
+                  Change Password
+                </p>
+              </div>
             </div>
           </div>
         </div>

@@ -6,7 +6,6 @@ import { FaEnvelope, FaLocationDot, FaPhoneVolume } from "react-icons/fa6";
 const Contact = () => {
   return (
     <div>
-      <Menubar />
       <div className="flex flex-col items-center justify-center p-6 py-18 mt-3 bg-[#FAFAFA]">
         <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-3 md:p-10 my-5 w-[100%] md:w-[50%]">
           <p className=" font-bold text-3xl mb-10">CONTACT US</p>
