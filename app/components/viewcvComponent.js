@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
 
-const GuardTable = ({ province }) => {
+const GuardTable = ({ province, handleCV }) => {
   // Sample data - replace with your actual data
   const [guards, setGuards] = useState([]);
 
@@ -38,7 +38,8 @@ const GuardTable = ({ province }) => {
   }, [entriesPerPage, searchTerm]);
 
   const handleViewCV = (cvUrl, guardName) => {
-    alert(`Viewing CV for ${guardName}\nCV URL: ${cvUrl}`);
+    // alert(`Viewing CV for ${guardName}\nCV URL: ${cvUrl}`);
+    setCurrentCV();
   };
 
   const goToPage = (page) => {
@@ -50,9 +51,6 @@ const GuardTable = ({ province }) => {
       const area = province;
 
       if (!area) return;
-
-      //   setLoading(true);
-      //   setError(null);
 
       try {
         const response = await fetch(
@@ -73,9 +71,7 @@ const GuardTable = ({ province }) => {
         }
       } catch (err) {
         console.error("Error fetching guards:", err);
-        // setError("Failed to fetch guards. Please try again.");
       } finally {
-        // setLoading(false);
       }
     };
 
@@ -84,9 +80,7 @@ const GuardTable = ({ province }) => {
 
   return (
     <div className="w-[70%] max-w-6xl mx-auto p-6 bg-white">
-      {/* Header Controls */}
       <div className="flex justify-between items-center mb-6">
-        {/* Entries per page selector */}
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">Show</span>
           <select
@@ -116,7 +110,6 @@ const GuardTable = ({ province }) => {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
@@ -166,12 +159,7 @@ const GuardTable = ({ province }) => {
                   </td>
                   <td className=" px-4 py-3 text-center">
                     <button
-                      onClick={() =>
-                        handleViewCV(
-                          guard.cvUrl,
-                          `${guard.name} ${guard.surname}`
-                        )
-                      }
+                      onClick={() => handleCV(guard)}
                       className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors">
                       View CV
                     </button>
@@ -191,9 +179,7 @@ const GuardTable = ({ province }) => {
         </table>
       </div>
 
-      {/* Pagination Info and Controls */}
       <div className="flex justify-between items-center mt-6">
-        {/* Results info */}
         <div className="text-sm text-gray-600">
           Showing {startIndex + 1} to{" "}
           {Math.min(endIndex, filteredGuards.length)} of {filteredGuards.length}{" "}
@@ -201,7 +187,6 @@ const GuardTable = ({ province }) => {
           {searchTerm && ` (filtered from ${guards.length} total entries)`}
         </div>
 
-        {/* Pagination controls */}
         {totalPages > 1 && (
           <div className="flex items-center gap-2">
             <button
@@ -212,7 +197,6 @@ const GuardTable = ({ province }) => {
               Previous
             </button>
 
-            {/* Page numbers */}
             <div className="flex gap-1">
               {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                 let pageNum;

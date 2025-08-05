@@ -5,13 +5,20 @@ import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
 import GuardTable from "../components/viewcvComponent";
+import Cvviewer from "../components/cvviewer/cvviewer";
 
 const ViewCv = () => {
   const router = useRouter();
+  const [currentCV, setCurrentCV] = useState();
 
   const [province, setProvince] = useState("");
   const handleBack = () => {
     router.push("/payment");
+  };
+
+  const handleCV = (cv) => {
+    console.log(cv);
+    setCurrentCV(cv);
   };
 
   const handleChange = (province) => {
@@ -39,13 +46,22 @@ const ViewCv = () => {
         <p className=" my-8 font-medium text-slate-700">
           {!province ? "No records found." : province}
         </p>
-        {province && <GuardTable province={province} />}
+
+        {!currentCV ? (
+          <div>
+            {province && <GuardTable province={province} handleCV={handleCV} />}
+          </div>
+        ) : (
+          <Cvviewer currentCV={currentCV} handleCV={handleCV} />
+        )}
         <div className="flex justify-center gap-8 w-full mt-6">
-          <button
-            onClick={handleBack}
-            className="bg-[#14A2B8] rounded-md text-white font-normal p-2 px-3 mt-2 ">
-            Back
-          </button>
+          {!currentCV && (
+            <button
+              onClick={handleBack}
+              className="bg-[#14A2B8] rounded-md text-white font-normal p-2 px-3 mt-2 ">
+              Back
+            </button>
+          )}
         </div>
       </div>
       <Footer />
