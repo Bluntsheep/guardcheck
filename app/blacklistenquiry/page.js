@@ -5,7 +5,6 @@ import Footer from "../components/footer/footer";
 const BlacklistEnquiry = () => {
   return (
     <div>
-      <Menubar />
       <div className=" text-center my-28">
         <p className=" text-5xl font-bold mb-8">BLACK LIST ENQUIRY</p>
         <input

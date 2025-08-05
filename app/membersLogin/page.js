@@ -34,7 +34,7 @@ const MembersLogin = () => {
         console.log("Login successful:", data.message);
         RegSuccess(data);
 
-        router.push("/dashboard");
+        router.push("/payment");
       } else {
         console.log("Login failed:", data.message);
       }
