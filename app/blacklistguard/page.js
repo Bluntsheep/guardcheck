@@ -1,6 +1,5 @@
 import React from "react";
 import Footer from "../components/footer/footer";
-import Menubar from "../components/menubar/menubar";
 
 const BlackListGuard = () => {
   return (
