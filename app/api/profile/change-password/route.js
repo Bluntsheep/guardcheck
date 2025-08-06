@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 
@@ -23,77 +22,62 @@ export async function POST(request) {
   try {
     connection = await pool.getConnection();
 
-    const body = await request.json();
-    const { userId, newPassword, confirmPassword } = body;
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
 
-    // Basic validations
     if (!userId) {
-      return NextResponse.json(
+      return Response.json(
         { success: false, message: "User ID is required" },
         { status: 400 }
       );
     }
-    if (!newPassword || !confirmPassword) {
-      return NextResponse.json(
-        { success: false, message: "Password and confirmation are required" },
-        { status: 400 }
-      );
-    }
-    if (newPassword !== confirmPassword) {
-      return NextResponse.json(
-        { success: false, message: "Passwords do not match" },
-        { status: 400 }
-      );
-    }
-    if (newPassword.length < 6) {
-      return NextResponse.json(
+
+    const { password } = await request.json();
+
+    if (!password || password.length < 6) {
+      return Response.json(
         { success: false, message: "Password must be at least 6 characters" },
         { status: 400 }
       );
     }
 
-    // Check if user exists
-    const [user] = await connection.execute(
+    // Check user exists
+    const [users] = await connection.execute(
       "SELECT id FROM registration WHERE id = ?",
       [userId]
     );
-
-    if (user.length === 0) {
-      return NextResponse.json(
+    if (users.length === 0) {
+      return Response.json(
         { success: false, message: "User not found" },
         { status: 404 }
       );
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    // Hash the password (bcrypt)
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Update password in DB
+    // Update password field - assuming column is named 'password' (adjust if your column name differs)
     const [result] = await connection.execute(
       "UPDATE registration SET password = ? WHERE id = ?",
       [hashedPassword, userId]
     );
 
     if (result.affectedRows === 0) {
-      return NextResponse.json(
-        { success: false, message: "Password update failed" },
+      return Response.json(
+        { success: false, message: "Failed to update password" },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       message: "Password updated successfully",
     });
   } catch (error) {
-    console.error("Password update error:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Internal server error",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
-      },
+    console.error("Error updating password:", error);
+    return Response.json(
+      { success: false, message: "Internal server error" },
       { status: 500 }
     );
   } finally {

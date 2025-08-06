@@ -37,7 +37,7 @@ export async function GET(request, { params }) {
     }
 
     const query = `
-      SELECT active 
+      SELECT id, active 
       FROM registration 
       WHERE d_user = ? OR email = ?
     `;
@@ -45,14 +45,14 @@ export async function GET(request, { params }) {
     const [rows] = await connection.execute(query, [username, username]);
 
     if (rows.length > 0) {
+      const user = rows[0];
       const isActive =
-        rows[0].active === 1 ||
-        rows[0].active === "1" ||
-        rows[0].active === true;
+        user.active === 1 || user.active === "1" || user.active === true;
 
       return Response.json({
         success: true,
         isActive: isActive,
+        userId: user.id,
         message: isActive ? "User is active" : "User is not active",
       });
     } else {
@@ -60,6 +60,7 @@ export async function GET(request, { params }) {
         {
           success: false,
           isActive: false,
+          userId: null,
           message: "User not found",
         },
         { status: 404 }
@@ -71,6 +72,7 @@ export async function GET(request, { params }) {
       {
         success: false,
         isActive: false,
+        userId: null,
         message: "Internal server error",
       },
       { status: 500 }
@@ -101,9 +103,9 @@ export async function POST(request) {
       );
     }
 
-    // Updated query to include username and active status
+    // Updated query to include id, username and active status
     const query = `
-      SELECT reg.d_user, reg.password, reg.active 
+      SELECT reg.id, reg.d_user, reg.password, reg.active 
       FROM registration reg 
       WHERE (reg.d_user = ? OR reg.email = ?)
     `;
@@ -120,6 +122,7 @@ export async function POST(request) {
           success: true,
           message: "Login successful",
           user: {
+            id: user.id,
             username: user.d_user,
             active: user.active,
           },
