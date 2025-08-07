@@ -40,19 +40,19 @@ const Home = () => {
       index: 4,
       heading: "What do I get for my membership fee?",
       content:
-        "* You can check a security guard to see if the guard has been blacklisted by another company and the reason for the listing. * You also have the facility to blacklist security guards as a Guardcheck Member. <br />* You will receive a database of CVs from Guards looking for jobs online with their Grade information.",
+        "You can check a security guard to see if the guard has been blacklisted by another company and the reason for the listing. You also have the facility to blacklist security guards as a Guardcheck Member. You will receive a database of CVs from Guards looking for jobs online with their Grade information.",
     },
     {
       index: 5,
       heading:
         "Do I pay extra for blacklisting and receiving reports on security guards?",
       content:
-        "No, you pay a once-off fee of R1 550.00 per year and receive all features available to you at any time as a registered Guardcheck member.",
+        "No, you pay a once-off fee of R2850 per year and receive all features available to you at any time as a registered Guardcheck member.",
     },
     {
       index: 6,
       heading: "Do I pay to print CVs from Guardcheck?",
-      content: "No, it is included in your R1 550.00 membership fee.",
+      content: "No, it is included in your R2850 membership fee.",
     },
     {
       index: 7,
@@ -62,9 +62,9 @@ const Home = () => {
     },
     {
       index: 8,
-      heading: " How do I pay? <br /> There are 2(Two) options for payment:-",
+      heading: " How do I pay?",
       content:
-        "* By credit card - you will receive your membership and password immediately via e-mail. <br /> * Internet transfer - information must be e-mailed to info@guardcheck.com and your membership and password will be forwarded to your address.",
+        "Payment can be made via EFT into our bank account. Once the funds have cleared, your account will be activated. Account Details: Nedbank, 13118342535, Current Account",
     },
     {
       index: 9,
@@ -102,7 +102,8 @@ const Home = () => {
     {
       index: 14,
       heading: "How long does the security guard CV's stay on the website?",
-      content: "removed off Guardcheck's database.",
+      content:
+        "Your CV will remain on the Guardcheck website for 3 months from the date of submission.",
     },
     {
       index: 15,

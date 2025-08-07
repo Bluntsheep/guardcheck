@@ -59,7 +59,7 @@ const Dashboard = () => {
             <div>
               <FaUserSecret color="#167BA9" size={50} />
             </div>
-            <a href="/popi.pdf " download>
+            <a href="/acceptLetterLatest.pdf " download>
               <div>
                 <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
                   Acceptance Letter
