@@ -54,6 +54,7 @@ const Menubar = () => {
     setCurrentUser("");
     setUserStatus(null);
     setLoginItems("/login");
+    handleMenu();
     setAuthKey((prev) => prev + 1); // Force re-render
 
     // Optional: Show a logout message
@@ -74,43 +75,36 @@ const Menubar = () => {
     updateAuthState();
   }, [updateAuthState, router]);
 
-  // Check auth state periodically (every 500ms)
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const currentStoredUser = sessionStorage.getItem("userName");
-      if (
-        currentStoredUser !== currentUser ||
-        (!currentStoredUser && currentUser)
-      ) {
-        updateAuthState();
-        setAuthKey((prev) => prev + 1);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [currentUser, updateAuthState]);
-
   // Initial auth check
   useEffect(() => {
     updateAuthState();
   }, [updateAuthState]);
 
-  // Global auth change listener
+  // Global auth change listener - much more efficient than polling
   useEffect(() => {
     const handleAuthChange = () => {
       updateAuthState();
       setAuthKey((prev) => prev + 1);
     };
 
-    // Listen for custom auth events
+    // Listen for custom auth events (most important)
     window.addEventListener("authStateChanged", handleAuthChange);
 
-    // Also listen for focus events (when user returns to tab)
+    // Listen for focus events (when user returns to tab)
     window.addEventListener("focus", handleAuthChange);
+
+    // Listen for page visibility changes
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        handleAuthChange();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
       window.removeEventListener("authStateChanged", handleAuthChange);
       window.removeEventListener("focus", handleAuthChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
   }, [updateAuthState]);
 
@@ -176,7 +170,9 @@ const Menubar = () => {
         {/* Mobile menu items */}
         <div className={`${!menuActive ? "hidden" : ""} md:hidden`}>
           <Link href="/">
-            <div className="bg-white border-b-[1px] border-slate-300">
+            <div
+              onClick={handleMenu}
+              className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">
                 Home
               </p>
@@ -184,13 +180,17 @@ const Menubar = () => {
           </Link>
 
           <Link href="/faq">
-            <div className="bg-white border-b-[1px] border-slate-300">
+            <div
+              onClick={handleMenu}
+              className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">FAQ</p>
             </div>
           </Link>
 
           <Link href={currentUser ? loginItems : "/membersLogin"}>
-            <div className="bg-white border-b-[1px] border-slate-300">
+            <div
+              onClick={handleMenu}
+              className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">
                 {currentUser ? `${currentUser} ` : "Member Login"}
               </p>
@@ -199,7 +199,9 @@ const Menubar = () => {
 
           {!currentUser && (
             <Link href="/register">
-              <div className="bg-white border-b-[1px] border-slate-300">
+              <div
+                onClick={handleMenu}
+                className="bg-white border-b-[1px] border-slate-300">
                 <p className="text-xl p-2 pl-4 font-medium text-slate-600">
                   Register
                 </p>
@@ -217,7 +219,9 @@ const Menubar = () => {
           )}
 
           <Link href="/contact">
-            <div className="bg-white border-b-[1px] border-slate-300">
+            <div
+              onClick={handleMenu}
+              className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">
                 Contact
               </p>
@@ -225,7 +229,9 @@ const Menubar = () => {
           </Link>
 
           <Link href="/terms">
-            <div className="bg-white border-b-[1px] border-slate-300">
+            <div
+              onClick={handleMenu}
+              className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">
                 Terms & Conditions
               </p>

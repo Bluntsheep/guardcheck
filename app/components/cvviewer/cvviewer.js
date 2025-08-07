@@ -5,110 +5,84 @@ const Cvviewer = ({ currentCV, handleCV }) => {
 
   console.log(cv);
 
+  const cvFields = [
+    { label: "Name", value: cv.name },
+    { label: "Surname", value: cv.surname },
+    { label: "Gender", value: cv.gender },
+    { label: "ID Number", value: cv.idNumber },
+    { label: "Sira / Sob No", value: cv.siraNumber },
+    { label: "Phone Number", value: cv.phone },
+    { label: "Province", value: cv.area },
+    { label: "Town", value: cv.town },
+    { label: "Highest Grade", value: cv.grade },
+    { label: "Guard Type", value: cv.guardType },
+    { label: "Previous Experience", value: cv.experience },
+  ];
+
   return (
-    <div>
-      <div className=" flex justify-center">
-        <div className=" w-[60%]">
-          <div>
-            <p className=" text-5xl text-slate-600 font-bold mb-4">{cv.name}</p>
+    <div className="min-h-screen bg-gray-50 py-4 px-4 sm:py-8">
+      <div className="flex justify-center">
+        <div className="w-full max-w-4xl lg:w-[60%]">
+          {/* Header */}
+          <div className="text-center mb-6 lg:mb-8">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl text-slate-600 font-bold break-words">
+              {cv.name}
+            </h1>
           </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Name</p>
+
+          {/* CV Content */}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+              {cvFields.map((field, index) => (
+                <div key={index} className="flex w-full">
+                  <div className="w-2/12 lg:w-3/12 text-left border-slate-200 border-[1px] bg-gray-50">
+                    <p className="text-slate-800 font-bold p-3 lg:p-4 text-sm lg:text-base">
+                      {field.label}
+                    </p>
+                  </div>
+                  <div className="w-10/12 lg:w-9/12 text-left border-slate-200 border-[1px]">
+                    <p className="text-slate-500 p-3 lg:p-4 text-sm lg:text-base break-words">
+                      {field.value || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.name}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Surname</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.surname}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Gender</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.gender}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">ID Number</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.idNumber}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Sira / Sob No</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.siraNumber}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Phone Number</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2">{cv.phone}</p>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+              {cvFields.map((field, index) => (
+                <div
+                  key={index}
+                  className={`p-4 ${
+                    index !== cvFields.length - 1
+                      ? "border-b border-slate-200"
+                      : ""
+                  }`}>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                    <span className="text-slate-800 font-bold text-sm min-w-0">
+                      {field.label}:
+                    </span>
+                    <span className="text-slate-500 text-sm break-words flex-1 sm:text-right">
+                      {field.value || "N/A"}
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2  ">Province</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.area}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Town</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.town}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Highest Grade</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2">{cv.grade}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">Guard Type</p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.guardType}</p>
-            </div>
-          </div>
-          <div className=" flex justify-center w-full">
-            <div className="w-2/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-800 font-bold p-2 ">
-                Previous Experience
-              </p>
-            </div>
-            <div className=" w-10/12 text-left  border-slate-200 border-[1px]">
-              <p className="  text-slate-500 p-2 ">{cv.experience}</p>
-            </div>
+
+          {/* Back Button */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => handleCV("")}
+              className="bg-[#14A2B8] rounded-md text-white font-normal p-3 px-6 lg:p-2 lg:px-3 hover:bg-[#0f8a9e] transition-colors touch-manipulation">
+              Back
+            </button>
           </div>
         </div>
       </div>
-      <button
-        onClick={() => handleCV("")}
-        className="bg-[#14A2B8] rounded-md text-white font-normal p-2 px-3 mt-2 ">
-        Back
-      </button>
     </div>
   );
 };
