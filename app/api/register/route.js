@@ -24,75 +24,131 @@ export async function POST(request) {
     connection = await pool.getConnection();
 
     const body = await request.json();
-    const { userId, newPassword, confirmPassword } = body;
+    console.log("Registration request body:", body);
+
+    const {
+      companyName,
+      contactperson,
+      contactcity,
+      sira_sob_number,
+      phoneNumber,
+      username,
+      cpass,
+      companyRegNo,
+      pobox,
+      zipcode,
+      email,
+      cellNumber,
+      apass,
+    } = body;
 
     // Basic validations
-    if (!userId) {
-      return NextResponse.json(
-        { success: false, message: "User ID is required" },
-        { status: 400 }
-      );
+    const requiredFields = [
+      { key: "companyName", value: companyName, label: "Company Name" },
+      { key: "contactperson", value: contactperson, label: "Contact Person" },
+      { key: "email", value: email, label: "Email" },
+      { key: "username", value: username, label: "Username" },
+      { key: "apass", value: apass, label: "Password" },
+      { key: "cpass", value: cpass, label: "Confirm Password" },
+    ];
+
+    for (const field of requiredFields) {
+      if (!field.value || field.value.trim() === "") {
+        return NextResponse.json(
+          { success: false, error: `${field.label} is required` },
+          { status: 400 }
+        );
+      }
     }
-    if (!newPassword || !confirmPassword) {
+
+    // Password validation
+    if (apass !== cpass) {
       return NextResponse.json(
-        { success: false, message: "Password and confirmation are required" },
-        { status: 400 }
-      );
-    }
-    if (newPassword !== confirmPassword) {
-      return NextResponse.json(
-        { success: false, message: "Passwords do not match" },
-        { status: 400 }
-      );
-    }
-    if (newPassword.length < 6) {
-      return NextResponse.json(
-        { success: false, message: "Password must be at least 6 characters" },
+        { success: false, error: "Passwords do not match" },
         { status: 400 }
       );
     }
 
-    // Check if user exists
-    const [user] = await connection.execute(
-      "SELECT id FROM registration WHERE id = ?",
-      [userId]
+    if (apass.length < 6) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Password must be at least 6 characters long",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { success: false, error: "Please enter a valid email address" },
+        { status: 400 }
+      );
+    }
+
+    // Check if email already exists
+    const [existingUser] = await connection.execute(
+      "SELECT id FROM registration WHERE email = ?",
+      [email]
     );
 
-    if (user.length === 0) {
+    if (existingUser.length > 0) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
+        { success: false, error: "Email already exists" },
+        { status: 400 }
       );
     }
 
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 12);
+    // Hash password
+    const hashedPassword = await bcrypt.hash(apass, 12);
 
-    // Update password in DB
+    // Insert new user with correct column names from your database
     const [result] = await connection.execute(
-      "UPDATE registration SET password = ? WHERE id = ?",
-      [hashedPassword, userId]
+      "INSERT INTO registration (company_name, company_reg_no, cell_no, pobox, sira_sob_no, email, phone_no, contact_person, password, city, zipcode, d_user, first_reg_date, reg_date, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 1)",
+      [
+        companyName, // company_name
+        companyRegNo, // company_reg_no
+        cellNumber, // cell_no
+        pobox, // pobox
+        sira_sob_number, // sira_sob_no
+        email, // email
+        phoneNumber, // phone_no
+        contactperson, // contact_person
+        hashedPassword, // password
+        contactcity, // city
+        zipcode, // zipcode
+        username, // d_user (username field)
+      ]
     );
 
     if (result.affectedRows === 0) {
       return NextResponse.json(
-        { success: false, message: "Password update failed" },
+        { success: false, error: "Registration failed" },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Password updated successfully",
+      message: "Registration successful",
+      user: {
+        id: result.id,
+        username: user.d_user,
+        active: user.active,
+      },
     });
   } catch (error) {
-    console.error("Password update error:", error);
+    console.error("Registration error:", error);
+
     return NextResponse.json(
       {
         success: false,
-        message: "Internal server error",
+        error: "Registration failed",
         details:
           process.env.NODE_ENV === "development" ? error.message : undefined,
+        sqlMessage: error.sqlMessage || undefined,
       },
       { status: 500 }
     );

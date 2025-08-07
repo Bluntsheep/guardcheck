@@ -81,6 +81,10 @@ const RegistrationDetails = () => {
       if (response.ok) {
         console.log("Successful Registration");
         RegSuccess(formObject.username);
+        sessionStorage.setItem("userName", data.user.username);
+        sessionStorage.setItem("userActive", data.user.active);
+        sessionStorage.setItem("userId", data.user.id);
+        window.dispatchEvent(new Event("authStateChanged"));
         router.push("/payment");
       } else {
         setError(data.error || "Registration failed. Please try again.");

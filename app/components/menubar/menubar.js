@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { FaBars } from "react-icons/fa";
 
 const Menubar = () => {
@@ -13,9 +13,54 @@ const Menubar = () => {
   const [userStatus, setUserStatus] = useState(null);
   const [loginItems, setLoginItems] = useState("/login");
   const [isLoading, setIsLoading] = useState(true);
+  const [authKey, setAuthKey] = useState(0); // Force re-render key
 
   const handleMenu = () => {
     setMenuActive(!menuActive);
+  };
+
+  const updateAuthState = useCallback(() => {
+    try {
+      const user = sessionStorage.getItem("userName");
+      const activeStatus = sessionStorage.getItem("userActive");
+
+      console.log("Retrieved from sessionStorage:", user, activeStatus);
+
+      if (user) {
+        setCurrentUser(user);
+        setUserStatus(activeStatus);
+        setLoginItems(activeStatus === "1" ? "/dashboard" : "/payment");
+      } else {
+        setCurrentUser("");
+        setUserStatus(null);
+        setLoginItems("/login");
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      setCurrentUser("");
+      setUserStatus(null);
+      setLoginItems("/login");
+    }
+    setIsLoading(false);
+  }, []);
+
+  const handleLogout = (e) => {
+    e.preventDefault();
+
+    // Clear all session data
+    sessionStorage.clear();
+
+    // Force immediate state update
+    setCurrentUser("");
+    setUserStatus(null);
+    setLoginItems("/login");
+    setAuthKey((prev) => prev + 1); // Force re-render
+
+    // Optional: Show a logout message
+    console.log("User logged out successfully");
+
+    // Navigate to home page
+    router.push("/");
   };
 
   const tabChange = (e, tab) => {
@@ -24,42 +69,50 @@ const Menubar = () => {
     router.push(`/${tab}`);
   };
 
+  // Check auth state on every route change
   useEffect(() => {
-    const initializeAuth = () => {
-      try {
-        const user = sessionStorage.getItem("currentUser");
+    updateAuthState();
+  }, [updateAuthState, router]);
 
-        if (user) {
-          const userData = JSON.parse(user);
-          console.log("Current user data:", userData);
-
-          // Simplified user data extraction
-          const username = userData.user?.username || userData.username;
-          const active = userData.user?.active || userData.active;
-
-          console.log("this is the user", username, active);
-
-          if (username) {
-            setCurrentUser(username);
-            setUserStatus(active);
-            // Set redirect based on user status
-            setLoginItems(active === 1 ? "/dashboard" : "/payment");
-          } else {
-            setLoginItems("/login");
-          }
-        } else {
-          setLoginItems("/login");
-        }
-      } catch (error) {
-        console.error("Error parsing user data:", error);
-        setLoginItems("/login");
-      } finally {
-        setIsLoading(false);
+  // Check auth state periodically (every 500ms)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const currentStoredUser = sessionStorage.getItem("userName");
+      if (
+        currentStoredUser !== currentUser ||
+        (!currentStoredUser && currentUser)
+      ) {
+        updateAuthState();
+        setAuthKey((prev) => prev + 1);
       }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [currentUser, updateAuthState]);
+
+  // Initial auth check
+  useEffect(() => {
+    updateAuthState();
+  }, [updateAuthState]);
+
+  // Global auth change listener
+  useEffect(() => {
+    const handleAuthChange = () => {
+      updateAuthState();
+      setAuthKey((prev) => prev + 1);
     };
 
-    initializeAuth();
-  }, []);
+    // Listen for custom auth events
+    window.addEventListener("authStateChanged", handleAuthChange);
+
+    // Also listen for focus events (when user returns to tab)
+    window.addEventListener("focus", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("authStateChanged", handleAuthChange);
+      window.removeEventListener("focus", handleAuthChange);
+    };
+  }, [updateAuthState]);
 
   // Loading skeleton component
   const LoadingSkeleton = () => (
@@ -95,7 +148,7 @@ const Menubar = () => {
   }
 
   return (
-    <div>
+    <div key={authKey}>
       {/* Top info bar */}
       <div className="bg-[#137AA7] px-[10%] text-white justify-between items-center shadow-2xl hidden md:flex">
         <div>
@@ -139,11 +192,7 @@ const Menubar = () => {
           <Link href={currentUser ? loginItems : "/membersLogin"}>
             <div className="bg-white border-b-[1px] border-slate-300">
               <p className="text-xl p-2 pl-4 font-medium text-slate-600">
-                {currentUser
-                  ? `${currentUser} ${
-                      userStatus === 1 ? "(Active)" : "(Inactive)"
-                    }`
-                  : "Member Login"}
+                {currentUser ? `${currentUser} ` : "Member Login"}
               </p>
             </div>
           </Link>
@@ -156,6 +205,15 @@ const Menubar = () => {
                 </p>
               </div>
             </Link>
+          )}
+          {currentUser && (
+            <div
+              onClick={handleLogout}
+              className="bg-white border-b-[1px] border-slate-300 cursor-pointer">
+              <p className="text-xl p-2 pl-4 font-medium text-slate-600">
+                Logout
+              </p>
+            </div>
           )}
 
           <Link href="/contact">
@@ -205,7 +263,7 @@ const Menubar = () => {
           {currentUser ? (
             <Link href={loginItems}>
               <p className="hover:underline underline-offset-8 decoration-2 decoration-purple-900">
-                {currentUser} {userStatus === 1 ? "(Active)" : "(Inactive)"}
+                {currentUser}
               </p>
             </Link>
           ) : (
@@ -222,6 +280,13 @@ const Menubar = () => {
                 Register
               </p>
             </Link>
+          )}
+          {currentUser && (
+            <p
+              onClick={handleLogout}
+              className="hover:underline underline-offset-8 decoration-2 decoration-purple-900 cursor-pointer">
+              Logout
+            </p>
           )}
 
           <Link href="/contact">
