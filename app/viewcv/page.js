@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
@@ -10,20 +10,38 @@ import { ChevronDown } from "lucide-react";
 
 const ViewCv = () => {
   const router = useRouter();
-  const [currentCV, setCurrentCV] = useState();
+  const [currentCV, setCurrentCV] = useState(null); // Changed from [] to null
   const [province, setProvince] = useState("");
+  const [isClient, setIsClient] = useState(false); // Add client-side check
+
+  // Ensure we're on the client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleBack = () => {
     router.push("/payment");
   };
 
+  const gradeOrder = {
+    "Grade A": 1,
+    "Grade B": 2,
+    "Grade C": 3,
+    "Grade D": 4,
+    "Grade E": 5,
+    "Grade F": 6,
+  };
+
   const handleCV = (cv) => {
-    console.log(cv);
+    console.log("Selected CV:", cv);
+    console.log("Current CV before update:", currentCV);
     setCurrentCV(cv);
   };
 
-  const handleChange = (province) => {
-    setProvince(province);
+  const handleChange = (selectedProvince) => {
+    setProvince(selectedProvince);
+    // Reset currentCV when province changes
+    setCurrentCV(null);
   };
 
   const provinces = [
@@ -38,6 +56,18 @@ const ViewCv = () => {
     { value: "NWP", label: "North West Province" },
     { value: "WC", label: "Western Cape" },
   ];
+
+  // Return loading state until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-[#14A2B8]"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">

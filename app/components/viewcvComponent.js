@@ -2,27 +2,50 @@ import React, { useState, useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
 
 const GuardTable = ({ province, handleCV }) => {
-  // Sample data - replace with your actual data
   const [guards, setGuards] = useState([]);
-
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Filter guards based on search term
+  // Grade order for sorting
+  const gradeOrder = {
+    "Grade A": 1,
+    "Grade B": 2,
+    "Grade C": 3,
+    "Grade D": 4,
+    "Grade E": 5,
+    "Grade F": 6,
+  };
+
   const filteredGuards = useMemo(() => {
-    if (!searchTerm) return guards;
+    let filtered = guards;
 
-    return guards.filter(
-      (guard) =>
-        (guard.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (guard.surname || "")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase()) ||
-        (guard.phone || "").includes(searchTerm) ||
-        (guard.grade || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (guard.guardType || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Apply search filter
+    if (searchTerm) {
+      filtered = guards.filter(
+        (guard) =>
+          (guard.name || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (guard.surname || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          (guard.phone || "").includes(searchTerm) ||
+          (guard.grade || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          (guard.guardType || "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Sort by grade (A to F)
+    return filtered.sort((a, b) => {
+      const aGrade = gradeOrder[a.grade] || 999; // Unknown grades go to the end
+      const bGrade = gradeOrder[b.grade] || 999;
+      return aGrade - bGrade;
+    });
   }, [guards, searchTerm]);
 
   // Calculate pagination
@@ -36,12 +59,6 @@ const GuardTable = ({ province, handleCV }) => {
     setCurrentPage(1);
   }, [entriesPerPage, searchTerm]);
 
-  const handleViewCV = (cvUrl, guardName) => {
-    // This is the original logic from the user's component.
-    // The `handleCV` prop is used to set the current CV in the parent component.
-    setCurrentCV();
-  };
-
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
@@ -49,29 +66,68 @@ const GuardTable = ({ province, handleCV }) => {
   useEffect(() => {
     const fetchGuardsByArea = async () => {
       const area = province;
-      if (!area) return;
+      if (!area) {
+        setGuards([]);
+        return;
+      }
+
+      setLoading(true);
+      setError(null);
 
       try {
         const response = await fetch(
           `/api/cvUpload?area=${encodeURIComponent(area)}`
         );
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data = await response.json();
 
         if (data.success) {
-          setGuards(data.data);
-          console.log(`Found ${data.total} guards in ${area}`);
+          setGuards(data.data || []);
+          console.log(
+            `Found ${data.total || data.data?.length || 0} guards in ${area}`
+          );
         } else {
-          console.error(data.error || "Failed to fetch guards");
+          throw new Error(data.error || "Failed to fetch guards");
         }
       } catch (err) {
         console.error("Error fetching guards:", err);
+        setError(err.message);
+        setGuards([]);
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchGuardsByArea();
   }, [province]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="w-full mx-auto p-6 bg-white">
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#14A2B8]"></div>
+          <span className="ml-3 text-gray-600">Loading guards...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="w-full mx-auto p-6 bg-white">
+        <div className="text-center py-12">
+          <div className="text-red-500 mb-2">Error loading guards</div>
+          <div className="text-gray-600 text-sm">{error}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mx-auto p-0 md:p-6 bg-white">
@@ -82,7 +138,7 @@ const GuardTable = ({ province, handleCV }) => {
           <select
             value={entriesPerPage}
             onChange={(e) => setEntriesPerPage(Number(e.target.value))}
-            className="border border-gray-300 rounded px-3 py-1 text-sm">
+            className="border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:border-transparent">
             <option value={10}>10</option>
             <option value={25}>25</option>
             <option value={50}>50</option>
@@ -100,41 +156,39 @@ const GuardTable = ({ province, handleCV }) => {
               placeholder="Search guards..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 rounded pl-10 pr-4 py-2 text-sm w-full md:w-64"
+              className="border border-gray-300 rounded pl-10 pr-4 py-2 text-sm w-full md:w-64 focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:border-transparent"
             />
           </div>
         </div>
       </div>
-
-      {/* --- */}
 
       {/* Mobile Card View */}
       <div className="md:hidden p-4 space-y-4">
         {currentGuards.length > 0 ? (
           currentGuards.map((guard) => (
             <div
-              key={guard.id}
+              key={guard.id || `${guard.name}-${guard.surname}-${guard.phone}`}
               className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
               <div className="flex justify-between items-center mb-2 border-b pb-2">
                 <span className="text-sm font-semibold text-gray-900">
                   {guard.name} {guard.surname}
                 </span>
                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
-                  {guard.guardType}
+                  {guard.guardType || "N/A"}
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm mb-1">
                 <span className="font-medium text-gray-500">Phone:</span>
-                <span className="text-gray-700">{guard.phone}</span>
+                <span className="text-gray-700">{guard.phone || "N/A"}</span>
               </div>
               <div className="flex justify-between items-center text-sm mb-4">
                 <span className="font-medium text-gray-500">Grade:</span>
-                <span className="text-gray-700">{guard.grade}</span>
+                <span className="text-gray-700">{guard.grade || "N/A"}</span>
               </div>
               <div className="text-right">
                 <button
                   onClick={() => handleCV(guard)}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors">
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2">
                   <Eye className="w-4 h-4" />
                   View CV
                 </button>
@@ -143,34 +197,34 @@ const GuardTable = ({ province, handleCV }) => {
           ))
         ) : (
           <div className="py-8 text-center text-gray-500">
-            No guards found matching your search criteria.
+            {searchTerm
+              ? "No guards found matching your search criteria."
+              : "No guards found in this region."}
           </div>
         )}
       </div>
-
-      {/* --- */}
 
       {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-50">
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                 Name
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                 Surname
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                 Phone Number
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                 Highest Grade
               </th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-b">
                 Guard Type
               </th>
-              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+              <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 border-b">
                 View CV
               </th>
             </tr>
@@ -179,29 +233,31 @@ const GuardTable = ({ province, handleCV }) => {
             {currentGuards.length > 0 ? (
               currentGuards.map((guard, index) => (
                 <tr
-                  key={guard.id}
+                  key={
+                    guard.id || `${guard.name}-${guard.surname}-${guard.phone}`
+                  }
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-3 text-sm text-gray-700">
-                    {guard.name}
+                  <td className="px-4 py-3 text-sm text-gray-700 border-b">
+                    {guard.name || "N/A"}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
-                    {guard.surname}
+                  <td className="px-4 py-3 text-sm text-gray-700 border-b">
+                    {guard.surname || "N/A"}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
-                    {guard.phone}
+                  <td className="px-4 py-3 text-sm text-gray-700 border-b">
+                    {guard.phone || "N/A"}
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">
-                    {guard.grade}
+                  <td className="px-4 py-3 text-sm text-gray-700 border-b">
+                    {guard.grade || "N/A"}
                   </td>
-                  <td className="px-4 py-3 text-sm">
-                    <span className="px-2 py-1 rounded-full text-xs font-medium">
-                      {guard.guardType}
+                  <td className="px-4 py-3 text-sm border-b">
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                      {guard.guardType || "N/A"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center border-b">
                     <button
                       onClick={() => handleCV(guard)}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors">
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2">
                       <Eye className="w-4 h-4" />
                       View CV
                     </button>
@@ -213,7 +269,9 @@ const GuardTable = ({ province, handleCV }) => {
                 <td
                   colSpan={6}
                   className="border px-4 py-8 text-center text-gray-500">
-                  No guards found matching your search criteria.
+                  {searchTerm
+                    ? "No guards found matching your search criteria."
+                    : "No guards found in this region."}
                 </td>
               </tr>
             )}
@@ -221,23 +279,21 @@ const GuardTable = ({ province, handleCV }) => {
         </table>
       </div>
 
-      {/* --- */}
-
       {/* Pagination Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-center mt-6 px-4 md:px-0">
-        <div className="text-sm text-gray-600 mb-4 md:mb-0">
-          Showing {startIndex + 1} to{" "}
-          {Math.min(endIndex, filteredGuards.length)} of {filteredGuards.length}{" "}
-          entries
-          {searchTerm && ` (filtered from ${guards.length} total entries)`}
-        </div>
+      {totalPages > 1 && (
+        <div className="flex flex-col md:flex-row justify-between items-center mt-6 px-4 md:px-0">
+          <div className="text-sm text-gray-600 mb-4 md:mb-0">
+            Showing {startIndex + 1} to{" "}
+            {Math.min(endIndex, filteredGuards.length)} of{" "}
+            {filteredGuards.length} entries
+            {searchTerm && ` (filtered from ${guards.length} total entries)`}
+          </div>
 
-        {totalPages > 1 && (
           <div className="flex items-center gap-2">
             <button
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
-              className="flex items-center gap-1 px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              className="flex items-center gap-1 px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2">
               <ChevronLeft className="w-4 h-4" />
               Previous
             </button>
@@ -258,9 +314,9 @@ const GuardTable = ({ province, handleCV }) => {
                   <button
                     key={pageNum}
                     onClick={() => goToPage(pageNum)}
-                    className={`px-3 py-2 text-sm border rounded ${
+                    className={`px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2 ${
                       currentPage === pageNum
-                        ? "bg-blue-500 text-white border-blue-500"
+                        ? "bg-[#14A2B8] text-white border-[#14A2B8]"
                         : "border-gray-300 hover:bg-gray-50"
                     }`}>
                     {pageNum}
@@ -272,13 +328,13 @@ const GuardTable = ({ province, handleCV }) => {
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="flex items-center gap-1 px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+              className="flex items-center gap-1 px-3 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2">
               Next
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
