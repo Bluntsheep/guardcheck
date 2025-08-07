@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Footer from "../components/footer/footer";
+import { useRouter } from "next/navigation";
 
 const BlackListGuard = () => {
   // Form state
@@ -19,6 +20,7 @@ const BlackListGuard = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const router = useRouter();
 
   const handleBack = () => {
     router.push("/payment");
