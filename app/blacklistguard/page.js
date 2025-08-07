@@ -20,6 +20,10 @@ const BlackListGuard = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
+  const handleBack = () => {
+    router.push("/payment");
+  };
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -282,6 +286,11 @@ const BlackListGuard = () => {
             </div>
           </form>
         </div>
+        <button
+          onClick={handleBack}
+          className="bg-[#14A2B8] rounded-md text-white font-normal p-3 px-6 hover:bg-[#0f8a9e] transition-colors">
+          Back
+        </button>
       </div>
 
       <Footer />
