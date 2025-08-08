@@ -106,7 +106,7 @@ export async function POST(request) {
 
     // Insert new user with correct column names from your database
     const [result] = await connection.execute(
-      "INSERT INTO registration (company_name, company_reg_no, cell_no, pobox, sira_sob_no, email, phone_no, contact_person, password, city, zipcode, d_user, first_reg_date, reg_date, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 1)",
+      "INSERT INTO registration (company_name, company_reg_no, cell_no, pobox, sira_sob_no, email, phone_no, contact_person, password, city, zipcode, d_user, first_reg_date, reg_date, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 0)",
       [
         companyName, // company_name
         companyRegNo, // company_reg_no
@@ -130,13 +130,21 @@ export async function POST(request) {
       );
     }
 
+    // Get the newly created user data
+    const [newUser] = await connection.execute(
+      "SELECT id, d_user, active FROM registration WHERE id = ?",
+      [result.insertId]
+    );
+
+    const userData = newUser[0];
+
     return NextResponse.json({
       success: true,
       message: "Registration successful",
       user: {
-        id: result.id,
-        username: user.d_user,
-        active: user.active,
+        id: userData.id,
+        username: userData.d_user,
+        active: userData.active,
       },
     });
   } catch (error) {
