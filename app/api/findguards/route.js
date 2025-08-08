@@ -35,17 +35,28 @@ export async function GET(request) {
       );
     }
 
-    let query = "SELECT * FROM blacklistguard  WHERE ";
+    // Updated query with LEFT JOIN to get user data
+    let query = `
+      SELECT 
+        bg.*,
+        ru.company_name as reg_company_name,
+        ru.phone_no as reg_phone_no,
+        ru.d_user as reg_d_user
+      FROM blacklistguard bg
+      LEFT JOIN registration ru ON bg.reg_user_id = ru.id
+      WHERE 
+    `;
+
     let queryParams = [];
     let conditions = [];
 
     if (idnumber) {
-      conditions.push("idnumber = ?");
+      conditions.push("bg.idnumber = ?");
       queryParams.push(idnumber);
     }
 
     if (sira_sob_no) {
-      conditions.push("sira_sob_no = ?");
+      conditions.push("bg.sira_sob_no = ?");
       queryParams.push(sira_sob_no);
     }
 
@@ -69,7 +80,17 @@ export async function GET(request) {
       date: guard.date,
       reason: guard.reason || "N/A",
       description: guard.description || "N/A",
-      other: guard.other_info || guard.notes || "N/A",
+      other: guard.other_info || guard.notes || guard.other || "N/A",
+      regUserId: guard.reg_user_id,
+
+      // User who registered/blacklisted this guard
+      registeredBy: {
+        userId: guard.reg_user_id,
+        companyName: guard.reg_company_name || "N/A",
+        phoneNumber: guard.reg_phone_no || "N/A",
+        username: guard.reg_d_user || "N/A",
+      },
+
       // Keep original fields for backwards compatibility
       name: guard.name,
       phone: guard.phonenum,

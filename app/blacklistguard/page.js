@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
 
@@ -20,7 +20,18 @@ const BlackListGuard = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [currentId, setCurrentId] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userId = sessionStorage.getItem("userId");
+      setCurrentId(userId);
+      console.log("Current User ID:", userId);
+    }
+  }, []);
+
+  console.log(currentId);
 
   const handleBack = () => {
     router.push("/payment");
@@ -96,7 +107,7 @@ const BlackListGuard = () => {
       description: formData.description.trim() || null,
       acceptance_letter: formData.acceptance_letter ? "Yes" : "No",
       file: null, // You can add file upload functionality later
-      reg_user_id: 1, // You might want to get this from user session
+      reg_user_id: Number(currentId), // You might want to get this from user session
       read_l_report: null, // You can add this field if needed
       other: formData.other.trim() || null,
     };

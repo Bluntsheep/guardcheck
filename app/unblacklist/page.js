@@ -4,12 +4,21 @@ import React, { useState, useMemo } from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
-import { Search, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
+  Trash2,
+} from "lucide-react";
 
-const BlacklistEnquiry = () => {
+const UnblacklistGuard = () => {
   const router = useRouter();
 
+  // Sample blacklist data - replace with your actual data
   const [blacklistData, setBlacklistData] = useState([]);
+  const [deletingIds, setDeletingIds] = useState(new Set()); // Track which records are being deleted
 
   const [input, setInput] = useState();
   const [entriesPerPage, setEntriesPerPage] = useState(10);
@@ -98,74 +107,146 @@ const BlacklistEnquiry = () => {
     }
   };
 
+  const handleDelete = async (record) => {
+    // Confirm deletion
+    if (
+      !window.confirm(
+        `Are you sure you want to remove ${record.guardName} ${record.surname} from the blacklist?`
+      )
+    ) {
+      return;
+    }
+
+    const recordId = record.id || record.idNumber; // Use appropriate unique identifier
+    setDeletingIds((prev) => new Set([...prev, recordId]));
+
+    try {
+      const response = await fetch(`/api/deleteguard`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: recordId,
+          idNumber: record.idNumber,
+          siraSobNo: record.siraSobNo,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove the record from local state
+        setBlacklistData((prev) =>
+          prev.filter((item) => (item.id || item.idNumber) !== recordId)
+        );
+
+        console.log("Guard successfully removed from blacklist");
+
+        // Show success message (you can replace this with a toast notification)
+        alert(
+          `${record.guardName} ${record.surname} has been successfully removed from the blacklist.`
+        );
+      } else {
+        console.error("Delete failed:", data.error);
+        alert("Failed to remove guard from blacklist. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during delete:", error);
+      alert("An error occurred while removing the guard. Please try again.");
+    } finally {
+      setDeletingIds((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(recordId);
+        return newSet;
+      });
+    }
+  };
+
   // Mobile Card Component for displaying records
-  const MobileCard = ({ record, index }) => (
-    <div
-      className={`p-4 rounded-lg border ${
-        index % 2 === 0 ? "bg-white" : "bg-gray-50"
-      } mb-4`}>
-      <div className="grid grid-cols-1 gap-2 text-sm">
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Company:</span>
-          <span className="text-gray-800">
-            {record.registeredBy.companyName}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Contact Person:</span>
-          <span className="text-gray-800">{record.registeredBy.username}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Phone:</span>
-          <span className="text-gray-800">
-            {record.registeredBy.phoneNumber}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Guard Name:</span>
-          <span className="text-gray-800">
-            {record.guardName} {record.surname}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Gender:</span>
-          <span className="text-gray-800">{record.gender}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">ID Number:</span>
-          <span className="text-gray-800">{record.idNumber}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">SIRA/SOB No:</span>
-          <span className="text-gray-800">{record.siraSobNo}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Date:</span>
-          <span className="text-gray-800">{record.date}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">Reason:</span>
-          <span className="text-gray-800">{record.reason}</span>
-        </div>
-        <div className="pt-2 border-t border-gray-200">
-          <span className="font-semibold text-gray-600">Description:</span>
-          <p className="text-gray-800 mt-1">{record.description}</p>
-        </div>
-        {record.other && (
-          <div className="pt-2">
-            <span className="font-semibold text-gray-600">Other:</span>
-            <p className="text-gray-800 mt-1">{record.other}</p>
+  const MobileCard = ({ record, index }) => {
+    const recordId = record.id || record.idNumber;
+    const isDeleting = deletingIds.has(recordId);
+
+    return (
+      <div
+        className={`p-4 rounded-lg border ${
+          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+        } mb-4 ${isDeleting ? "opacity-50" : ""}`}>
+        <div className="grid grid-cols-1 gap-2 text-sm">
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Company:</span>
+            <span className="text-gray-800">{record.companyName}</span>
           </div>
-        )}
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Contact Person:</span>
+            <span className="text-gray-800">{record.contactPerson}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Phone:</span>
+            <span className="text-gray-800">{record.phoneNumber}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Guard Name:</span>
+            <span className="text-gray-800">
+              {record.guardName} {record.surname}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Gender:</span>
+            <span className="text-gray-800">{record.gender}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">ID Number:</span>
+            <span className="text-gray-800">{record.idNumber}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">SIRA/SOB No:</span>
+            <span className="text-gray-800">{record.siraSobNo}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Date:</span>
+            <span className="text-gray-800">{record.date}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-gray-600">Reason:</span>
+            <span className="text-gray-800">{record.reason}</span>
+          </div>
+          <div className="pt-2 border-t border-gray-200">
+            <span className="font-semibold text-gray-600">Description:</span>
+            <p className="text-gray-800 mt-1">{record.description}</p>
+          </div>
+          {record.other && (
+            <div className="pt-2">
+              <span className="font-semibold text-gray-600">Other:</span>
+              <p className="text-gray-800 mt-1">{record.other}</p>
+            </div>
+          )}
+
+          {/* Delete Button for Mobile */}
+          <div className="pt-3 border-t border-gray-200 flex justify-end">
+            <button
+              onClick={() => handleDelete(record)}
+              disabled={isDeleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm">
+              <Trash2 className="w-4 h-4" />
+              {isDeleting ? "Removing..." : "Remove from Blacklist"}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div>
       <div className="text-center py-8 px-4 sm:py-16 lg:py-28">
         <p className="text-2xl sm:text-3xl lg:text-5xl font-bold mb-6 lg:mb-8">
-          BLACK LIST ENQUIRY
+          UN BLACKLISTED GUARDS
         </p>
 
         {/* Search Section */}
@@ -281,56 +362,76 @@ const BlacklistEnquiry = () => {
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                     Other
                   </th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {currentData.length > 0 ? (
-                  currentData.map((record, index) => (
-                    <tr
-                      key={record.id}
-                      className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.registeredBy.companyName}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.registeredBy.username}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.registeredBy.phoneNumber}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.guardName}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.surname}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.gender}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.idNumber}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.siraSobNo}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.date}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.reason}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.description}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">
-                        {record.other}
-                      </td>
-                    </tr>
-                  ))
+                  currentData.map((record, index) => {
+                    const recordId = record.id || record.idNumber;
+                    const isDeleting = deletingIds.has(recordId);
+
+                    return (
+                      <tr
+                        key={recordId}
+                        className={`${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        } ${isDeleting ? "opacity-50" : ""}`}>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.companyName}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.contactPerson}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.phoneNumber}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.guardName}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.surname}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.gender}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.idNumber}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.siraSobNo}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.date}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.reason}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.description}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-700">
+                          {record.other}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <button
+                            onClick={() => handleDelete(record)}
+                            disabled={isDeleting}
+                            className="flex items-center gap-1 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm mx-auto"
+                            title="Remove from blacklist">
+                            <Trash2 className="w-4 h-4" />
+                            {isDeleting ? "Removing..." : "Remove"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
                     <td
-                      colSpan={12}
+                      colSpan={13}
                       className="border border-gray-300 px-4 py-8 text-center text-gray-500">
                       No blacklist records found matching your search criteria.
                     </td>
@@ -344,7 +445,11 @@ const BlacklistEnquiry = () => {
           <div className="lg:hidden">
             {currentData.length > 0 ? (
               currentData.map((record, index) => (
-                <MobileCard key={record.id} record={record} index={index} />
+                <MobileCard
+                  key={record.id || record.idNumber}
+                  record={record}
+                  index={index}
+                />
               ))
             ) : (
               <div className="text-center py-8 text-gray-500 border border-gray-300 rounded-lg">
@@ -427,5 +532,4 @@ const BlacklistEnquiry = () => {
     </div>
   );
 };
-
-export default BlacklistEnquiry;
+export default UnblacklistGuard;

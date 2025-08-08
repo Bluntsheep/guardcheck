@@ -37,7 +37,7 @@ const Dashboard = () => {
             <div>
               <FaUsers color="#167BA9" size={50} />
             </div>
-            <div>
+            <div onClick={() => handleClick("unblacklist")}>
               <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
                 Un-Blacklist Guards
               </p>
