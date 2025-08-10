@@ -12,14 +12,12 @@ const MembersLogin = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
+    setError("");
     setIsLoading(true);
 
     const form = e.target;
     const formData = new FormData(form);
     const dataToSend = Object.fromEntries(formData.entries());
-
-    console.log(dataToSend);
 
     try {
       const response = await fetch("/api/login", {
@@ -31,8 +29,6 @@ const MembersLogin = () => {
       });
 
       const data = await response.json();
-
-      console.log(data);
 
       if (data.success) {
         console.log("Login successful:", data);
@@ -71,8 +67,6 @@ const MembersLogin = () => {
 
   useEffect(() => {
     const currentStatus = sessionStorage.getItem("currentUser");
-
-    console.log("userStatus", currentStatus);
 
     if (!currentStatus) {
       null;

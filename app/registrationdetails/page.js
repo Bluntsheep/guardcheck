@@ -1,7 +1,6 @@
 "use client";
 
 import Footer from "@/app/components/footer/footer";
-import Menubar from "@/app/components/menubar/menubar";
 import React, { useState } from "react";
 import RegSuccess from "../components/registrationsuccess/regsuccess";
 import { useRouter } from "next/navigation";
@@ -24,8 +23,6 @@ const RegistrationDetails = () => {
     formData.forEach((value, key) => {
       formObject[key] = value;
     });
-
-    console.log("Form data:", formObject);
 
     // Frontend validation
     const requiredFields = [
@@ -79,7 +76,6 @@ const RegistrationDetails = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Successful Registration");
         RegSuccess(formObject.username);
         sessionStorage.setItem("userName", data.user.username);
         sessionStorage.setItem("userActive", data.user.active);
