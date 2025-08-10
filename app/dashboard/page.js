@@ -80,7 +80,7 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md align-center mt-8  hover:shadow-xs">
+          <div className=" flex gap-6 bg-white p-8 md:w-3/12  shadow-md items-center mt-8 hover:shadow-xs">
             <div>
               <FaPen color="#167BA9" size={50} />
             </div>

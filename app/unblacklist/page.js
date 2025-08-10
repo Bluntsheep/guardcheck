@@ -258,7 +258,7 @@ const UnblacklistGuard = () => {
               placeholder="Enter PSIRA / SOB No / or ID"
             />
             <button
-              className="absolute right-3 lg:right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="absolute right-3 lg:right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors "
               onClick={() => {
                 handleSearch();
               }}>
@@ -266,7 +266,13 @@ const UnblacklistGuard = () => {
             </button>
           </div>
         </div>
-
+        <button
+          onClick={() => {
+            handleSearch();
+          }}
+          className=" px-3 py-2 mt-1 bg-[#14a2b8] rounded-md text-white font-normal hover:bg-[#0f8a9e] transition-colors">
+          Search
+        </button>
         {/* Results Section */}
         <div className="w-full max-w-7xl mx-auto p-4 lg:p-6 bg-white rounded-lg shadow-sm">
           {/* Controls */}
