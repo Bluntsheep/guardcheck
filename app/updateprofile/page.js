@@ -19,6 +19,8 @@ const UpdateProfile = () => {
     poBox: "",
     postalCode: "",
     cellNumber: "",
+    password: "",
+    confirmPassword: "",
   });
 
   // Get user from sessionStorage safely
@@ -69,7 +71,7 @@ const UpdateProfile = () => {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Populate form with user data
+        // Populate form with user data (excluding password fields)
         setFormData({
           companyName: data.user.company_name || "",
           contactPerson: data.user.contact_person || "",
@@ -80,6 +82,8 @@ const UpdateProfile = () => {
           poBox: data.user.pobox || "",
           postalCode: data.user.zipcode || "",
           cellNumber: data.user.cell_no || "",
+          password: "", // Always empty for security
+          confirmPassword: "", // Always empty for security
         });
       } else {
         setMessage({
@@ -105,6 +109,45 @@ const UpdateProfile = () => {
       ...prev,
       [name]: value,
     }));
+
+    // Clear any previous messages when user starts typing
+    if (message.text) {
+      setMessage({ type: "", text: "" });
+    }
+  };
+
+  // Validate password fields
+  const validatePasswords = () => {
+    const { password, confirmPassword } = formData;
+
+    // If both password fields are empty, that's fine (no password update)
+    if (!password && !confirmPassword) {
+      return { isValid: true };
+    }
+
+    // If one is filled but not the other
+    if (password && !confirmPassword) {
+      return { isValid: false, error: "Please confirm your new password" };
+    }
+
+    if (!password && confirmPassword) {
+      return { isValid: false, error: "Please enter your new password" };
+    }
+
+    // If both are filled, check if they match
+    if (password !== confirmPassword) {
+      return { isValid: false, error: "Passwords do not match" };
+    }
+
+    // Check password strength (minimum 6 characters)
+    if (password.length < 6) {
+      return {
+        isValid: false,
+        error: "Password must be at least 6 characters long",
+      };
+    }
+
+    return { isValid: true };
   };
 
   // Update profile function
@@ -152,17 +195,54 @@ const UpdateProfile = () => {
       return;
     }
 
+    // Validate passwords first
+    const passwordValidation = validatePasswords();
+    if (!passwordValidation.isValid) {
+      setMessage({
+        type: "error",
+        text: passwordValidation.error,
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setMessage({ type: "", text: "" });
 
     try {
-      const result = await updateProfile(formData);
+      // Prepare data for submission
+      const submitData = {
+        companyName: formData.companyName,
+        contactPerson: formData.contactPerson,
+        siraSobNumber: formData.siraSobNumber,
+        phoneNumber: formData.phoneNumber,
+        username: formData.username,
+        companyRegNumber: formData.companyRegNumber,
+        poBox: formData.poBox,
+        postalCode: formData.postalCode,
+        cellNumber: formData.cellNumber,
+      };
+
+      // Only include password if it's provided
+      if (formData.password && formData.password.trim() !== "") {
+        submitData.password = formData.password;
+      }
+
+      const result = await updateProfile(submitData);
 
       if (result.success) {
         setMessage({
           type: "success",
-          text: "Profile updated successfully!",
+          text: formData.password
+            ? "Profile and password updated successfully!"
+            : "Profile updated successfully!",
         });
+
+        // Clear password fields after successful update
+        setFormData((prev) => ({
+          ...prev,
+          password: "",
+          confirmPassword: "",
+        }));
       } else {
         setMessage({
           type: "error",
@@ -170,6 +250,7 @@ const UpdateProfile = () => {
         });
       }
     } catch (error) {
+      console.error("Update error:", error);
       setMessage({
         type: "error",
         text: "An unexpected error occurred. Please try again.",
@@ -213,7 +294,7 @@ const UpdateProfile = () => {
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Company Name"
                   />
                 </div>
@@ -222,7 +303,7 @@ const UpdateProfile = () => {
                     name="contactPerson"
                     value={formData.contactPerson}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Contact Person"
                   />
                 </div>
@@ -231,7 +312,7 @@ const UpdateProfile = () => {
                     name="siraSobNumber"
                     value={formData.siraSobNumber}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="PSIRA / SOB Number"
                   />
                 </div>
@@ -240,7 +321,7 @@ const UpdateProfile = () => {
                     name="phoneNumber"
                     value={formData.phoneNumber}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Phone Number"
                   />
                 </div>
@@ -249,7 +330,7 @@ const UpdateProfile = () => {
                     name="username"
                     value={formData.username}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="UserName"
                   />
                 </div>
@@ -260,7 +341,7 @@ const UpdateProfile = () => {
                     name="companyRegNumber"
                     value={formData.companyRegNumber}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Company Registration Number"
                   />
                 </div>
@@ -269,7 +350,7 @@ const UpdateProfile = () => {
                     name="poBox"
                     value={formData.poBox}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="P.O Box"
                   />
                 </div>
@@ -278,7 +359,7 @@ const UpdateProfile = () => {
                     name="postalCode"
                     value={formData.postalCode}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Postal Code"
                   />
                 </div>
@@ -287,8 +368,38 @@ const UpdateProfile = () => {
                     name="cellNumber"
                     value={formData.cellNumber}
                     onChange={handleInputChange}
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                     placeholder="Cell Number"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Password Section */}
+            <div className="mt-6 border-t border-gray-300 pt-6">
+              <p className="text-gray-600 mb-4 text-sm">
+                Leave password fields empty if you don't want to change your
+                password
+              </p>
+              <div className="md:flex w-full gap-4">
+                <div className="w-full">
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="New Password (optional)"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="bg-white p-3 my-2 w-full border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
+                  />
+                </div>
+                <div className="w-full">
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm New Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    className="bg-white p-3 my-2 w-full border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
                   />
                 </div>
               </div>
@@ -299,7 +410,7 @@ const UpdateProfile = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`rounded-xl text-white font-normal p-3 px-3 my-2 ${
+                  className={`rounded-xl text-white font-normal p-3 px-6 my-2 transition-colors ${
                     isSubmitting
                       ? "bg-gray-400 cursor-not-allowed"
                       : "bg-[#167BA9] hover:bg-[#145a7d]"

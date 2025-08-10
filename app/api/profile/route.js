@@ -1,5 +1,6 @@
 // app/api/profile/[userId]/route.js
 import mysql from "mysql2/promise";
+import bcrypt from "bcryptjs";
 
 const pool = mysql.createPool({
   host: "sql6.jnb1.host-h.net",
@@ -104,6 +105,7 @@ export async function PUT(request) {
       poBox,
       postalCode,
       cellNumber,
+      password, // Added password field
     } = body;
 
     // Check if user exists
@@ -114,6 +116,14 @@ export async function PUT(request) {
       return Response.json(
         { success: false, message: "User not found" },
         { status: 404 }
+      );
+    }
+
+    // Validate password if provided
+    if (password !== undefined && password.length > 0 && password.length < 6) {
+      return Response.json(
+        { success: false, message: "Password must be at least 6 characters" },
+        { status: 400 }
       );
     }
 
@@ -175,6 +185,16 @@ export async function PUT(request) {
       updateValues.push(cellNumber.trim() || null);
     }
 
+    // Handle password update if provided
+    if (password !== undefined && password.length > 0) {
+      // Hash the password using bcrypt with 10 salt rounds (same as your existing implementation)
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      updateFields.push("password = ?");
+      updateValues.push(hashedPassword);
+    }
+
     if (updateFields.length === 0) {
       return Response.json(
         { success: false, message: "No fields to update" },
@@ -192,7 +212,12 @@ export async function PUT(request) {
     `;
 
     console.log("Executing update query:", updateQuery);
-    console.log("With parameters:", updateValues);
+    console.log(
+      "With parameters:",
+      updateValues.map((val, index) =>
+        updateFields[index]?.includes("password") ? "[HIDDEN]" : val
+      )
+    );
 
     const [result] = await connection.execute(updateQuery, updateValues);
 
@@ -203,7 +228,7 @@ export async function PUT(request) {
       );
     }
 
-    // Fetch updated user data
+    // Fetch updated user data (excluding password)
     const fetchUpdatedQuery = `
       SELECT 
         id, company_name, company_reg_no, contact_person, pobox, sira_sob_no,
@@ -215,7 +240,10 @@ export async function PUT(request) {
 
     return Response.json({
       success: true,
-      message: "Profile updated successfully",
+      message:
+        password !== undefined && password.length > 0
+          ? "Profile and password updated successfully"
+          : "Profile updated successfully",
       user: updatedUser[0],
     });
   } catch (error) {

@@ -105,10 +105,10 @@ export async function POST(request) {
 
     // Updated query to include id, username and active status
     const query = `
-      SELECT reg.id, reg.d_user, reg.password, reg.active 
-      FROM registration reg 
-      WHERE (reg.d_user = ? OR reg.email = ?)
-    `;
+  SELECT reg.id, reg.d_user, reg.password, reg.active, reg.role
+  FROM registration reg 
+  WHERE (reg.d_user = ? OR reg.email = ?)
+`;
 
     const [rows] = await connection.execute(query, [username, username]);
 
@@ -125,6 +125,7 @@ export async function POST(request) {
             id: user.id,
             username: user.d_user,
             active: user.active,
+            role: user.role,
           },
         });
       } else {

@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Menubar from "../components/menubar/menubar";
 import Footer from "../components/footer/footer";
 import {
   FaKey,
   FaPen,
+  FaThLarge,
   FaUserAltSlash,
   FaUsers,
   FaUserSecret,
@@ -14,11 +15,32 @@ import { FaFileShield } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const [role, setRole] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  useEffect(() => {
+    // This ensures the code only runs on the client-side
+    const userRole = sessionStorage.getItem("userRole");
+    setRole(userRole);
+    setIsLoading(false);
+
+    console.log(userRole);
+  }, []);
 
   const handleClick = (route) => {
     router.push(`/${route}`);
   };
+
+  // Show loading while we check the role
+  if (isLoading) {
+    return (
+      <div className="bg-[#FFFFFF] min-h-screen flex items-center justify-center">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <div className=" bg-[#FFFFFF]">
       <div className=" my-[3%] cursor-default align-middle justify-center object-center">
@@ -91,20 +113,23 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        <div className="flex-wrap  md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]">
-          <div onClick={() => handleClick("changepassword")}>
-            <div className=" flex gap-6 bg-white p-8   shadow-md align-center mt-8  hover:shadow-xs">
-              <div>
-                <FaKey color="#167BA9" size={50} />
-              </div>
-              <div>
-                <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
-                  Change Password
-                </p>
+        {role === "5150" && (
+          <div
+            className={` flex-wrap  md:flex text-center md:my-3 p-3 gap-10 justify-center md:px-[5%]`}>
+            <div onClick={() => handleClick("adminDashboard")}>
+              <div className=" flex gap-6 bg-white p-8 shadow-md align-center mt-8  hover:shadow-xs">
+                <div>
+                  <FaThLarge color="#167BA9" size={50} />
+                </div>
+                <div>
+                  <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
+                    Admin Dashboard
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <Footer />
     </div>

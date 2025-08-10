@@ -39,6 +39,7 @@ const MembersLogin = () => {
         sessionStorage.setItem("userName", data.user.username);
         sessionStorage.setItem("userActive", data.user.active);
         sessionStorage.setItem("userId", data.user.id);
+        sessionStorage.setItem("userRole", data.user.role);
         window.dispatchEvent(new Event("authStateChanged"));
         RegSuccess(data);
 
