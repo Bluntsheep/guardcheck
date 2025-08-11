@@ -378,8 +378,8 @@ const UpdateProfile = () => {
             {/* Password Section */}
             <div className="mt-6 border-t border-gray-300 pt-6">
               <p className="text-gray-600 mb-4 text-sm">
-                Leave password fields empty if you don't want to change your
-                password
+                {`Leave password fields empty if you don't want to change your
+                password`}
               </p>
               <div className="md:flex w-full gap-4">
                 <div className="w-full">
