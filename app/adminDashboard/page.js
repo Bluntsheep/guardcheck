@@ -30,6 +30,12 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [statusFilter, setStatusFilter] = useState("all"); // all, active, inactive
+  const [sortOrder, setSortOrder] = useState("asc"); // asc, desc
+
+  // Helper function to check if account is active (handles different data types)
+  const isAccountActive = (active) => {
+    return active === 1 || active === "1" || active === true;
+  };
 
   const filteredData = useMemo(() => {
     let filtered = accountsData;
@@ -59,11 +65,22 @@ const AdminDashboard = () => {
     // Filter by status
     if (statusFilter !== "all") {
       filtered = filtered.filter((account) => {
-        return statusFilter === "active"
-          ? account.active === 1
-          : account.active === 0;
+        const isActive = isAccountActive(account.active);
+        return statusFilter === "active" ? isActive : !isActive;
       });
     }
+
+    // Sort alphabetically by company name
+    filtered.sort((a, b) => {
+      const nameA = (a.company_name || "").toLowerCase();
+      const nameB = (b.company_name || "").toLowerCase();
+
+      if (sortOrder === "asc") {
+        return nameA.localeCompare(nameB);
+      } else {
+        return nameB.localeCompare(nameA);
+      }
+    });
 
     return filtered;
   }, [accountsData, searchTerm, statusFilter]);
@@ -75,7 +92,7 @@ const AdminDashboard = () => {
 
   React.useEffect(() => {
     setCurrentPage(1);
-  }, [entriesPerPage, searchTerm, statusFilter]);
+  }, [entriesPerPage, searchTerm, statusFilter, sortOrder]);
 
   // Load all accounts on component mount
   useEffect(() => {
@@ -154,7 +171,8 @@ const AdminDashboard = () => {
   };
 
   const handleStatusToggle = async (account) => {
-    const newStatus = account.active === 1 ? 0 : 1;
+    const isActive = isAccountActive(account.active);
+    const newStatus = isActive ? 0 : 1;
     const action = newStatus === 1 ? "activate" : "deactivate";
 
     // Confirm action
@@ -224,7 +242,7 @@ const AdminDashboard = () => {
   // Mobile Card Component for displaying accounts
   const MobileCard = ({ account, index }) => {
     const isUpdating = updatingIds.has(account.id);
-    const isActive = account.active === 1;
+    const isActive = isAccountActive(account.active);
 
     return (
       <div
@@ -363,6 +381,17 @@ const AdminDashboard = () => {
                   <option value="inactive">Inactive Only</option>
                 </select>
               </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-600">Sort:</span>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="border border-gray-300 rounded px-3 py-2 text-sm">
+                  <option value="asc">A-Z (Company Name)</option>
+                  <option value="desc">Z-A (Company Name)</option>
+                </select>
+              </div>
             </div>
 
             {/* Search - Mobile Toggle */}
@@ -446,7 +475,7 @@ const AdminDashboard = () => {
                 ) : currentData.length > 0 ? (
                   currentData.map((account, index) => {
                     const isUpdating = updatingIds.has(account.id);
-                    const isActive = account.active === 1;
+                    const isActive = isAccountActive(account.active);
 
                     return (
                       <tr

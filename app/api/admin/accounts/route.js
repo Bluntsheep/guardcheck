@@ -40,7 +40,8 @@ export async function GET() {
         pobox,
         active,
         reg_date,
-        first_reg_date
+        first_reg_date,
+        active_date
       FROM registration 
       ORDER BY reg_date DESC
     `);
@@ -126,7 +127,7 @@ export async function PATCH(request) {
     if (account.active === active) {
       return NextResponse.json({
         success: true,
-        message: `Account is already ${active === 1 ? "active" : "inactive"}`,
+        message: `Account is already ${active === 0 ? "active" : "inactive"}`,
         data: {
           id: account.id,
           company_name: account.company_name,
@@ -136,9 +137,9 @@ export async function PATCH(request) {
       });
     }
 
-    // Update the active status
+    // Update the active status and active_date to current timestamp
     const [result] = await connection.execute(
-      "UPDATE registration SET active = ? WHERE id = ?",
+      "UPDATE registration SET active = ?, active_date = NOW() WHERE id = ?",
       [active, id]
     );
 
@@ -169,6 +170,7 @@ export async function PATCH(request) {
         d_user: account.d_user,
         active: active,
         previousActive: account.active,
+        updatedAt: new Date().toISOString(), // Optional: include timestamp in response
       },
     });
   } catch (error) {
