@@ -381,17 +381,6 @@ const AdminDashboard = () => {
                   <option value="inactive">Inactive Only</option>
                 </select>
               </div>
-
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600">Sort:</span>
-                <select
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                  className="border border-gray-300 rounded px-3 py-2 text-sm">
-                  <option value="asc">A-Z (Company Name)</option>
-                  <option value="desc">Z-A (Company Name)</option>
-                </select>
-              </div>
             </div>
 
             {/* Search - Mobile Toggle */}
