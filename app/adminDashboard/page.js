@@ -87,7 +87,7 @@ const AdminDashboard = () => {
               <FaUserShield color="#167BA9" size={50} />
             </div>
             <div
-              onClick={() => handleClick("guards")}
+              onClick={() => handleClick("unblacklistadmin")}
               className="cursor-pointer">
               <p className="font-bold text-xl hover:text-red-600 text-[#12114A] transition-colors duration-200">
                 Guards

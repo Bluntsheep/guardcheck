@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import Footer from "../components/footer/footer";
+import React, { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Search,
@@ -11,19 +10,23 @@ import {
   X,
   Trash2,
 } from "lucide-react";
+import Footer from "@/app/components/footer/footer";
 
 const UnblacklistGuardAdmin = () => {
   const router = useRouter();
 
-  // Sample blacklist data - replace with your actual data
   const [blacklistData, setBlacklistData] = useState([]);
-  const [deletingIds, setDeletingIds] = useState(new Set()); // Track which records are being deleted
-
-  const [input, setInput] = useState();
+  const [deletingIds, setDeletingIds] = useState(new Set());
+  const [input, setInput] = useState(""); // Initialize with an empty string
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+
+  // --- New useEffect hook for initial data fetch ---
+  useEffect(() => {
+    fetchAllGuards();
+  }, []);
 
   const filteredData = useMemo(() => {
     if (!searchTerm) return blacklistData;
@@ -54,7 +57,7 @@ const UnblacklistGuardAdmin = () => {
   const endIndex = startIndex + entriesPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [entriesPerPage, searchTerm]);
 
@@ -66,19 +69,38 @@ const UnblacklistGuardAdmin = () => {
     router.push("/payment");
   };
 
-  const handleChange = (input) => {
-    setInput(input);
+  const handleChange = (e) => {
+    setInput(e.target.value);
+  };
+
+  // --- New function to fetch all guards ---
+  const fetchAllGuards = async () => {
+    try {
+      const response = await fetch("/api/findguardsAdmin");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (data.success) {
+        setBlacklistData(data.data);
+      } else {
+        console.error("Failed to fetch all guards:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching all guards:", error);
+    }
   };
 
   const handleSearch = async () => {
+    // --- Modified logic to fetch all data if input is empty ---
     if (!input || input.trim() === "") {
-      console.log("Please enter a search term");
+      fetchAllGuards(); // Fetch all guards if the search input is empty
       return;
     }
 
     try {
       const response = await fetch(
-        `/api/findguards?idnum=${encodeURIComponent(
+        `/api/unblacklistadmin?idnum=${encodeURIComponent(
           input.trim()
         )}&snum=${encodeURIComponent(input.trim())}`
       );
@@ -92,12 +114,7 @@ const UnblacklistGuardAdmin = () => {
       if (data.success) {
         console.log("Search results:", data.data);
         console.log(`Found ${data.total} records`);
-
         setBlacklistData(data.data);
-
-        if (data.total === 0) {
-          console.log("No records found for the search term");
-        }
       } else {
         console.error("Search failed:", data.error);
       }
@@ -107,7 +124,6 @@ const UnblacklistGuardAdmin = () => {
   };
 
   const handleDelete = async (record) => {
-    // Confirm deletion
     if (
       !window.confirm(
         `Are you sure you want to remove ${record.guardName} ${record.surname} from the blacklist?`
@@ -116,7 +132,7 @@ const UnblacklistGuardAdmin = () => {
       return;
     }
 
-    const recordId = record.id || record.idNumber; // Use appropriate unique identifier
+    const recordId = record.id || record.idNumber;
     setDeletingIds((prev) => new Set([...prev, recordId]));
 
     try {
@@ -139,14 +155,11 @@ const UnblacklistGuardAdmin = () => {
       const data = await response.json();
 
       if (data.success) {
-        // Remove the record from local state
         setBlacklistData((prev) =>
           prev.filter((item) => (item.id || item.idNumber) !== recordId)
         );
 
         console.log("Guard successfully removed from blacklist");
-
-        // Show success message (you can replace this with a toast notification)
         alert(
           `${record.guardName} ${record.surname} has been successfully removed from the blacklist.`
         );
@@ -166,7 +179,6 @@ const UnblacklistGuardAdmin = () => {
     }
   };
 
-  // Mobile Card Component for displaying records
   const MobileCard = ({ record, index }) => {
     const recordId = record.id || record.idNumber;
     const isDeleting = deletingIds.has(recordId);
@@ -225,8 +237,6 @@ const UnblacklistGuardAdmin = () => {
               <p className="text-gray-800 mt-1">{record.other}</p>
             </div>
           )}
-
-          {/* Delete Button for Mobile */}
           <div className="pt-3 border-t border-gray-200 flex justify-end">
             <button
               onClick={() => handleDelete(record)}
@@ -248,35 +258,29 @@ const UnblacklistGuardAdmin = () => {
           UN BLACKLISTED GUARDS
         </p>
 
-        {/* Search Section */}
         <div className="flex justify-center mb-8">
           <div className="relative w-full max-w-md lg:w-[50%]">
             <input
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={handleChange}
               className="shadow-xl bg-white w-full p-4 lg:p-6 pr-12 lg:pr-16 rounded-lg"
               placeholder="Enter PSIRA / SOB No / or ID"
+              value={input}
             />
             <button
-              className="absolute right-3 lg:right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors "
-              onClick={() => {
-                handleSearch();
-              }}>
+              className="absolute right-3 lg:right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              onClick={handleSearch}>
               <Search className="w-4 h-4 lg:w-5 lg:h-5 text-gray-600" />
             </button>
           </div>
         </div>
         <button
-          onClick={() => {
-            handleSearch();
-          }}
-          className=" px-3 py-2 mt-1 bg-[#14a2b8] rounded-md text-white font-normal hover:bg-[#0f8a9e] transition-colors">
+          onClick={handleSearch}
+          className="px-3 py-2 mt-1 bg-[#14a2b8] rounded-md text-white font-normal hover:bg-[#0f8a9e] transition-colors">
           Search
         </button>
-        {/* Results Section */}
+
         <div className="w-full max-w-7xl mx-auto p-4 lg:p-6 bg-white rounded-lg shadow-sm">
-          {/* Controls */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            {/* Entries per page */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Show</span>
               <select
@@ -291,7 +295,6 @@ const UnblacklistGuardAdmin = () => {
               <span className="text-sm text-gray-600">entries</span>
             </div>
 
-            {/* Search - Mobile Toggle */}
             <div className="w-full sm:w-auto">
               <div className="sm:hidden mb-2">
                 <button
@@ -326,7 +329,6 @@ const UnblacklistGuardAdmin = () => {
             </div>
           </div>
 
-          {/* Desktop Table */}
           <div className="hidden lg:block overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -446,7 +448,6 @@ const UnblacklistGuardAdmin = () => {
             </table>
           </div>
 
-          {/* Mobile Cards */}
           <div className="lg:hidden">
             {currentData.length > 0 ? (
               currentData.map((record, index) => (
@@ -463,7 +464,6 @@ const UnblacklistGuardAdmin = () => {
             )}
           </div>
 
-          {/* Pagination Info */}
           <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
             <div className="text-sm text-gray-600 text-center sm:text-left">
               Showing {startIndex + 1} to{" "}
@@ -473,7 +473,6 @@ const UnblacklistGuardAdmin = () => {
                 ` (filtered from ${blacklistData.length} total entries)`}
             </div>
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
                 <button
@@ -524,7 +523,6 @@ const UnblacklistGuardAdmin = () => {
           </div>
         </div>
 
-        {/* Back Button */}
         <div className="flex justify-center w-full mt-6">
           <button
             onClick={handleBack}
@@ -537,4 +535,5 @@ const UnblacklistGuardAdmin = () => {
     </div>
   );
 };
+
 export default UnblacklistGuardAdmin;
