@@ -1,7 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { ChevronLeft, ChevronRight, Eye, Search } from "lucide-react";
+import { ChevronLeft, ChevronRight, Eye, Search, Trash2 } from "lucide-react";
 
-const GuardTable = ({ province, handleCV }) => {
+const GuardTable = ({
+  province,
+  handleCV,
+  handleDeleteCV,
+  deleteCv,
+  refresh,
+}) => {
   const [guards, setGuards] = useState([]);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -9,7 +15,6 @@ const GuardTable = ({ province, handleCV }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Grade order for sorting
   const gradeOrder = {
     "Grade A": 1,
     "Grade B": 2,
@@ -22,7 +27,6 @@ const GuardTable = ({ province, handleCV }) => {
   const filteredGuards = useMemo(() => {
     let filtered = guards;
 
-    // Apply search filter
     if (searchTerm) {
       filtered = guards.filter(
         (guard) =>
@@ -40,21 +44,18 @@ const GuardTable = ({ province, handleCV }) => {
       );
     }
 
-    // Sort by grade (A to F)
     return filtered.sort((a, b) => {
-      const aGrade = gradeOrder[a.grade] || 999; // Unknown grades go to the end
+      const aGrade = gradeOrder[a.grade] || 999;
       const bGrade = gradeOrder[b.grade] || 999;
       return aGrade - bGrade;
     });
   }, [guards, searchTerm]);
 
-  // Calculate pagination
   const totalPages = Math.ceil(filteredGuards.length / entriesPerPage);
   const startIndex = (currentPage - 1) * entriesPerPage;
   const endIndex = startIndex + entriesPerPage;
   const currentGuards = filteredGuards.slice(startIndex, endIndex);
 
-  // Reset to first page when entries per page or search changes
   useEffect(() => {
     setCurrentPage(1);
   }, [entriesPerPage, searchTerm]);
@@ -87,9 +88,6 @@ const GuardTable = ({ province, handleCV }) => {
 
         if (data.success) {
           setGuards(data.data || []);
-          console.log(
-            `Found ${data.total || data.data?.length || 0} guards in ${area}`
-          );
         } else {
           throw new Error(data.error || "Failed to fetch guards");
         }
@@ -103,9 +101,8 @@ const GuardTable = ({ province, handleCV }) => {
     };
 
     fetchGuardsByArea();
-  }, [province]);
+  }, [province, refresh]); // <-- Added 'refresh' as a dependency
 
-  // Loading state
   if (loading) {
     return (
       <div className="w-full mx-auto p-6 bg-white">
@@ -117,7 +114,6 @@ const GuardTable = ({ province, handleCV }) => {
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="w-full mx-auto p-6 bg-white">
@@ -131,7 +127,6 @@ const GuardTable = ({ province, handleCV }) => {
 
   return (
     <div className="w-full mx-auto p-0 md:p-6 bg-white">
-      {/* Controls: Search and Entries Per Page */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-6 px-4 md:px-0 gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600">Show</span>
@@ -162,7 +157,6 @@ const GuardTable = ({ province, handleCV }) => {
         </div>
       </div>
 
-      {/* Mobile Card View */}
       <div className="md:hidden p-4 space-y-4">
         {currentGuards.length > 0 ? (
           currentGuards.map((guard) => (
@@ -185,7 +179,7 @@ const GuardTable = ({ province, handleCV }) => {
                 <span className="font-medium text-gray-500">Grade:</span>
                 <span className="text-gray-700">{guard.grade || "N/A"}</span>
               </div>
-              <div className="text-right">
+              <div className="text-right mt-4">
                 <button
                   onClick={() => handleCV(guard)}
                   className="inline-flex items-center gap-1 px-3 py-1 bg-[#14A2B8] text-white text-sm rounded hover:bg-[#118496] transition-colors focus:outline-none focus:ring-2 focus:ring-[#14A2B8] focus:ring-offset-2">
@@ -193,6 +187,16 @@ const GuardTable = ({ province, handleCV }) => {
                   View CV
                 </button>
               </div>
+              {deleteCv && (
+                <div className="text-right mt-2">
+                  <button
+                    onClick={() => handleDeleteCV(guard.id)}
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))
         ) : (
@@ -204,7 +208,6 @@ const GuardTable = ({ province, handleCV }) => {
         )}
       </div>
 
-      {/* Desktop Table View */}
       <div className="hidden md:block overflow-x-auto">
         <table className="w-full border-collapse">
           <thead>
@@ -227,6 +230,11 @@ const GuardTable = ({ province, handleCV }) => {
               <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 border-b">
                 View CV
               </th>
+              {deleteCv && (
+                <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700 border-b">
+                  Delete
+                </th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -262,12 +270,22 @@ const GuardTable = ({ province, handleCV }) => {
                       View CV
                     </button>
                   </td>
+                  {deleteCv && (
+                    <td className="px-4 py-3 text-center border-b">
+                      <button
+                        onClick={() => handleDeleteCV(guard.id)}
+                        className="inline-flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={deleteCv ? 7 : 6}
                   className="border px-4 py-8 text-center text-gray-500">
                   {searchTerm
                     ? "No guards found matching your search criteria."
@@ -279,7 +297,6 @@ const GuardTable = ({ province, handleCV }) => {
         </table>
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex flex-col md:flex-row justify-between items-center mt-6 px-4 md:px-0">
           <div className="text-sm text-gray-600 mb-4 md:mb-0">

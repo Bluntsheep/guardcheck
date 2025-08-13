@@ -48,7 +48,7 @@ export async function GET(request) {
 
     // Format the response data
     const formattedGuards = guards.map((guard) => ({
-      id: guard.id,
+      id: guard.guardcv_id,
       name: guard.name,
       surname: guard.surname,
       phone: guard.phonenum,
@@ -222,6 +222,57 @@ export async function POST(request) {
     );
   } finally {
     // Release connection back to pool
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+export async function DELETE(request) {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+
+    // Extract the ID from the URL search parameters
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return Response.json(
+        { error: "CV ID is required for deletion." },
+        { status: 400 }
+      );
+    }
+
+    // SQL query to delete the row with the specified ID
+    const query = "DELETE FROM guard_cv WHERE guardcv_id = ?";
+    const queryParams = [id];
+
+    console.log("Executing delete query for ID:", id);
+
+    // Execute the delete query
+    const [result] = await connection.execute(query, queryParams);
+
+    if (result.affectedRows === 0) {
+      // If no rows were affected, the CV with that ID was not found
+      return Response.json({ error: "CV not found." }, { status: 404 });
+    }
+
+    return Response.json(
+      { message: `CV with ID ${id} deleted successfully.` },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error deleting CV:", error);
+    return Response.json(
+      {
+        error: "Failed to delete CV. Please try again.",
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 }
+    );
+  } finally {
     if (connection) {
       connection.release();
     }

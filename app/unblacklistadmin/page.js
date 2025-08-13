@@ -12,7 +12,7 @@ import {
   Trash2,
 } from "lucide-react";
 
-const UnblacklistGuard = () => {
+const UnblacklistGuardAdmin = () => {
   const router = useRouter();
 
   // Sample blacklist data - replace with your actual data
@@ -537,4 +537,4 @@ const UnblacklistGuard = () => {
     </div>
   );
 };
-export default UnblacklistGuard;
+export default UnblacklistGuardAdmin;
