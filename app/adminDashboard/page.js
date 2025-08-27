@@ -122,7 +122,7 @@ const AdminDashboard = () => {
               <FaEnvelope color="#167BA9" size={50} />
             </div>
             <div
-              onClick={() => handleClick("emails")}
+              onClick={() => handleClick("sendMail")}
               className="cursor-pointer">
               <p className="font-bold text-xl hover:text-red-600 text-[#12114A] transition-colors duration-200">
                 Emails
