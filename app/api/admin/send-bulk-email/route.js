@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 
 // Option 2: Using Nodemailer with SMTP (for custom email servers)
 const createSMTPTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: process.env.SMTP_HOST, // e.g., 'smtp.yourdomain.com'
     port: process.env.SMTP_PORT || 587,
     secure: false, // true for 465, false for other ports
@@ -21,6 +21,7 @@ const createSMTPTransporter = () => {
 export async function POST(request) {
   try {
     const body = await request.json();
+    const { recipients, subject, message } = body;
 
     // Validate required fields
     if (!recipients || !Array.isArray(recipients) || recipients.length === 0) {
@@ -120,22 +121,28 @@ export async function POST(request) {
 
       // If some emails failed but some succeeded
       if (successful > 0) {
-        return res.status(207).json({
-          success: true,
-          message: `${successful} emails sent successfully, ${failed.length} failed`,
-          details: {
-            successful,
-            failed: failed.length,
-            errors: failed.map((f) => f.reason?.message || "Unknown error"),
+        return Response.json(
+          {
+            success: true,
+            message: `${successful} emails sent successfully, ${failed.length} failed`,
+            details: {
+              successful,
+              failed: failed.length,
+              errors: failed.map((f) => f.reason?.message || "Unknown error"),
+            },
           },
-        });
+          { status: 207 }
+        );
       } else {
         // All emails failed
-        return res.status(500).json({
-          success: false,
-          error: "Failed to send all emails",
-          details: failed.map((f) => f.reason?.message || "Unknown error"),
-        });
+        return Response.json(
+          {
+            success: false,
+            error: "Failed to send all emails",
+            details: failed.map((f) => f.reason?.message || "Unknown error"),
+          },
+          { status: 500 }
+        );
       }
     }
     return Response.json({
