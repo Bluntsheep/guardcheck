@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Footer from "../components/footer/footer";
+import { useRouter } from "next/navigation";
 
 const UpdateProfile = () => {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [isAdminEdit, setIsAdminEdit] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -28,8 +31,29 @@ const UpdateProfile = () => {
     if (typeof window === "undefined") return;
 
     try {
+      // First check if this is an admin edit session
+      const adminEditUser = sessionStorage.getItem("adminEditUser");
+
+      if (adminEditUser) {
+        // This is an admin editing a user profile
+        const adminSessionData = JSON.parse(adminEditUser);
+        setIsAdminEdit(true);
+
+        if (adminSessionData.success && adminSessionData.user) {
+          setUser(adminSessionData.user);
+          loadUserProfile(adminSessionData.user.id);
+        } else {
+          setMessage({
+            type: "error",
+            text: "Invalid admin edit session. Please try again.",
+          });
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      // Regular user session
       const currentUser = sessionStorage.getItem("currentUser");
-      // const currentUser = "994";
 
       if (!currentUser) {
         setMessage({
@@ -41,7 +65,6 @@ const UpdateProfile = () => {
       }
 
       const sessionData = JSON.parse(currentUser);
-
       const userId = sessionData?.user?.id;
 
       if (sessionData.success && userId) {
@@ -183,6 +206,17 @@ const UpdateProfile = () => {
     }
   };
 
+  // Handle back button
+  const handleBack = () => {
+    if (isAdminEdit) {
+      // Clean up admin edit session
+      sessionStorage.removeItem("adminEditUser");
+      router.push("/adminDashboard/member"); // Go back to member management
+    } else {
+      router.back(); // Regular back navigation for users
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -243,6 +277,19 @@ const UpdateProfile = () => {
           password: "",
           confirmPassword: "",
         }));
+
+        // If this was an admin edit, show success and provide navigation option
+        if (isAdminEdit) {
+          setTimeout(() => {
+            if (
+              window.confirm(
+                "Profile updated successfully! Would you like to return to member management?"
+              )
+            ) {
+              handleBack();
+            }
+          }, 1500);
+        }
       } else {
         setMessage({
           type: "error",
@@ -272,7 +319,17 @@ const UpdateProfile = () => {
     <div>
       <div className="flex flex-col items-center justify-center py-10 mt-6 bg-[#FAFAFA]">
         <div className="flex flex-col items-center bg-[#F9F9F9] border-4 border-[#167BA9] p-3 md:p-10 my-5 w-[90%] md:w-[50%]">
-          <p className="font-bold text-3xl mb-10 text-center">UPDATE PROFILE</p>
+          <p className="font-bold text-3xl mb-10 text-center">
+            {isAdminEdit ? "EDIT USER PROFILE" : "UPDATE PROFILE"}
+          </p>
+
+          {/* Admin Edit Notice */}
+          {isAdminEdit && (
+            <div className="w-full p-3 mb-4 rounded bg-blue-100 border border-blue-400 text-blue-700">
+              <strong>Admin Mode:</strong> You are editing the profile for{" "}
+              {formData.companyName} ({formData.username})
+            </div>
+          )}
 
           {/* Success/Error Message */}
           {message.text && (
@@ -378,8 +435,9 @@ const UpdateProfile = () => {
             {/* Password Section */}
             <div className="mt-6 border-t border-gray-300 pt-6">
               <p className="text-gray-600 mb-4 text-sm">
-                {`Leave password fields empty if you don't want to change your
-                password`}
+                {`Leave password fields empty if you don't want to change ${
+                  isAdminEdit ? "the user's" : "your"
+                } password`}
               </p>
               <div className="md:flex w-full gap-4">
                 <div className="w-full">
@@ -405,19 +463,27 @@ const UpdateProfile = () => {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row justify-center w-[40%] md:w-full mt-6">
-              <div className="flex flex-col">
+            <div className="flex flex-col md:flex-row justify-center gap-4 w-full mt-6">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className={`rounded-xl text-white font-normal p-3 px-6 my-2 transition-colors ${
+                  isSubmitting
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-[#167BA9] hover:bg-[#145a7d]"
+                }`}>
+                {isSubmitting ? "UPDATING..." : "UPDATE PROFILE"}
+              </button>
+
+              {/* Back button for admin edits */}
+              {isAdminEdit && (
                 <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`rounded-xl text-white font-normal p-3 px-6 my-2 transition-colors ${
-                    isSubmitting
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-[#167BA9] hover:bg-[#145a7d]"
-                  }`}>
-                  {isSubmitting ? "UPDATING..." : "UPDATE PROFILE"}
+                  type="button"
+                  onClick={handleBack}
+                  className="rounded-xl bg-gray-500 text-white font-normal p-3 px-6 my-2 hover:bg-gray-600 transition-colors">
+                  BACK TO MEMBERS
                 </button>
-              </div>
+              )}
             </div>
           </form>
         </div>
