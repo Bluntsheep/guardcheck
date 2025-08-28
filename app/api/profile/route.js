@@ -274,3 +274,148 @@ export async function PUT(request) {
     }
   }
 }
+
+// DELETE - Delete user profile
+export async function DELETE(request) {
+  let connection;
+
+  try {
+    connection = await pool.getConnection();
+
+    // Get userId from query string
+    const url = new URL(request.url);
+    const userId = url.searchParams.get("userId");
+
+    if (!userId) {
+      return Response.json(
+        { success: false, message: "User ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Validate that userId is a number
+    const numericUserId = parseInt(userId);
+    if (isNaN(numericUserId)) {
+      return Response.json(
+        { success: false, message: "Invalid User ID format" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user exists before deletion
+    const checkUserQuery = `
+      SELECT id, company_name, d_user, active 
+      FROM registration 
+      WHERE id = ?
+    `;
+    const [existingUser] = await connection.execute(checkUserQuery, [userId]);
+
+    if (existingUser.length === 0) {
+      return Response.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    const userToDelete = existingUser[0];
+
+    // Start transaction for safe deletion
+    await connection.beginTransaction();
+
+    try {
+      // If you have related tables that reference this user, delete from them first
+      // Example: Delete user sessions, logs, or other related data
+
+      // Delete related data (uncomment and modify as needed based on your database schema)
+      /*
+      // Delete user sessions if you have a sessions table
+      await connection.execute(
+        "DELETE FROM user_sessions WHERE user_id = ?",
+        [userId]
+      );
+
+      // Delete user logs if you have a logs table
+      await connection.execute(
+        "DELETE FROM user_logs WHERE user_id = ?",
+        [userId]
+      );
+
+      // Delete any other related records
+      // await connection.execute("DELETE FROM other_table WHERE user_id = ?", [userId]);
+      */
+
+      // Delete the main user record
+      const deleteUserQuery = "DELETE FROM registration WHERE id = ?";
+      const [deleteResult] = await connection.execute(deleteUserQuery, [
+        userId,
+      ]);
+
+      if (deleteResult.affectedRows === 0) {
+        await connection.rollback();
+        return Response.json(
+          { success: false, message: "Failed to delete user profile" },
+          { status: 500 }
+        );
+      }
+
+      // Commit the transaction
+      await connection.commit();
+
+      console.log(
+        `User profile deleted successfully: ID ${userId}, Company: ${userToDelete.company_name}, Username: ${userToDelete.d_user}`
+      );
+
+      return Response.json({
+        success: true,
+        message: `Profile for ${userToDelete.company_name} (${userToDelete.d_user}) has been deleted successfully`,
+        deletedUser: {
+          id: userToDelete.id,
+          companyName: userToDelete.company_name,
+          username: userToDelete.d_user,
+        },
+      });
+    } catch (transactionError) {
+      // Rollback transaction on error
+      await connection.rollback();
+      throw transactionError;
+    }
+  } catch (error) {
+    console.error("Error deleting profile:", error);
+
+    // Handle specific database errors
+    if (error.code === "ER_ROW_IS_REFERENCED_2") {
+      return Response.json(
+        {
+          success: false,
+          message:
+            "Cannot delete user profile. This user has associated records that must be removed first.",
+        },
+        { status: 409 }
+      );
+    }
+
+    if (error.code === "PROTOCOL_CONNECTION_LOST") {
+      return Response.json(
+        {
+          success: false,
+          message: "Database connection lost. Please try again.",
+        },
+        { status: 500 }
+      );
+    }
+
+    return Response.json(
+      {
+        success: false,
+        message: "Failed to delete profile. Please try again.",
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 }
+    );
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}

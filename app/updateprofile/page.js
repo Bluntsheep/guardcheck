@@ -8,8 +8,10 @@ const UpdateProfile = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [isAdminEdit, setIsAdminEdit] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -206,6 +208,76 @@ const UpdateProfile = () => {
     }
   };
 
+  // Delete profile function
+  const deleteProfile = async () => {
+    try {
+      const response = await fetch(`/api/profile?userId=${user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        return {
+          success: true,
+          message: data.message,
+        };
+      } else {
+        return {
+          success: false,
+          error: data.message || "Failed to delete profile",
+        };
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: "Network error: " + error.message,
+      };
+    }
+  };
+
+  // Handle delete profile
+  const handleDeleteProfile = async () => {
+    if (!user || !isAdminEdit) return;
+
+    setIsDeleting(true);
+    setMessage({ type: "", text: "" });
+
+    try {
+      const result = await deleteProfile();
+
+      if (result.success) {
+        setMessage({
+          type: "success",
+          text: "Profile deleted successfully!",
+        });
+
+        // Clean up admin edit session and redirect after a short delay
+        setTimeout(() => {
+          sessionStorage.removeItem("adminEditUser");
+          router.push("/adminDashboard/member");
+        }, 2000);
+      } else {
+        setMessage({
+          type: "error",
+          text: result.error,
+        });
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage({
+        type: "error",
+        text: "An unexpected error occurred while deleting the profile.",
+      });
+    } finally {
+      setIsDeleting(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
   // Handle back button
   const handleBack = () => {
     if (isAdminEdit) {
@@ -343,6 +415,44 @@ const UpdateProfile = () => {
             </div>
           )}
 
+          {/* Delete Confirmation Modal */}
+          {showDeleteConfirm && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white p-6 rounded-lg max-w-md w-[90%] mx-4">
+                <h3 className="text-lg font-bold mb-4 text-red-600">
+                  Confirm Delete Profile
+                </h3>
+                <p className="mb-6 text-gray-700">
+                  Are you sure you want to delete the profile for{" "}
+                  <strong>{formData.companyName}</strong> ({formData.username})?
+                  <br />
+                  <br />
+                  <span className="text-red-600 font-semibold">
+                    This action cannot be undone!
+                  </span>
+                </p>
+                <div className="flex gap-4 justify-end">
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    disabled={isDeleting}
+                    className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors">
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDeleteProfile}
+                    disabled={isDeleting}
+                    className={`px-4 py-2 text-white rounded transition-colors ${
+                      isDeleting
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-red-600 hover:bg-red-700"
+                    }`}>
+                    {isDeleting ? "Deleting..." : "Delete Profile"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="w-full">
             <div className="md:flex w-full gap-8">
               <div className="w-full">
@@ -475,14 +585,28 @@ const UpdateProfile = () => {
                 {isSubmitting ? "UPDATING..." : "UPDATE PROFILE"}
               </button>
 
-              {/* Back button for admin edits */}
+              {/* Admin-only buttons */}
               {isAdminEdit && (
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className="rounded-xl bg-gray-500 text-white font-normal p-3 px-6 my-2 hover:bg-gray-600 transition-colors">
-                  BACK TO MEMBERS
-                </button>
+                <>
+                  <button
+                    type="button"
+                    onClick={handleBack}
+                    className="rounded-xl bg-gray-500 text-white font-normal p-3 px-6 my-2 hover:bg-gray-600 transition-colors">
+                    BACK TO MEMBERS
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    disabled={isDeleting}
+                    className={`rounded-xl text-white font-normal p-3 px-6 my-2 transition-colors ${
+                      isDeleting
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-red-600 hover:bg-red-700"
+                    }`}>
+                    DELETE PROFILE
+                  </button>
+                </>
               )}
             </div>
           </form>
