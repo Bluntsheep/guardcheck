@@ -1,21 +1,31 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import Menubar from "../components/menubar/menubar";
-import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
-import { Search, ChevronLeft, ChevronRight, Menu, X } from "lucide-react";
+import {
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  X,
+  Printer,
+} from "lucide-react";
+
+// Mock components - replace with your actual imports
+const Footer = () => (
+  <div className="bg-gray-800 text-white p-4 text-center">Footer Content</div>
+);
 
 const BlacklistEnquiry = () => {
   const router = useRouter();
 
   const [blacklistData, setBlacklistData] = useState([]);
-
   const [input, setInput] = useState();
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
 
   const filteredData = useMemo(() => {
     if (!searchTerm) return blacklistData;
@@ -98,6 +108,360 @@ const BlacklistEnquiry = () => {
     }
   };
 
+  const handlePrintReport = (record) => {
+    setIsPrinting(true);
+
+    // Create a new window for printing
+    const printWindow = window.open("", "_blank");
+
+    if (printWindow) {
+      // Create the print document with professional styling
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Blacklist Report - ${record.guardName} ${
+        record.surname
+      }</title>
+          <meta charset="utf-8">
+          <style>
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+            
+            body {
+              font-family: 'Segoe UI', Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              background: white;
+              padding: 40px 20px;
+              font-size: 14px;
+            }
+            
+            .report-container {
+              max-width: 800px;
+              margin: 0 auto;
+              background: white;
+            }
+            
+            .report-header {
+              text-align: center;
+              margin-bottom: 30px;
+              padding-bottom: 20px;
+              border-bottom: 3px solid #dc3545;
+            }
+            
+            .report-header h1 {
+              font-size: 28px;
+              color: #dc3545;
+              margin-bottom: 8px;
+              font-weight: 700;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+            
+            .report-header .subtitle {
+              font-size: 11px;
+              color: #6c757d;
+              font-weight: 600;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+            }
+            
+            .alert-box {
+              background: #f8d7da;
+
+              border-radius: 8px;
+              padding: 10px;
+              margin-bottom: 10px;
+              text-align: center;
+            }
+            
+            .alert-box h2 {
+              color: #721c24;
+              font-size: 24px;
+              margin-bottom: 10px;
+              font-weight: 700;
+            }
+            
+            .alert-box p {
+              color: #721c24;
+              font-size: 12px;
+              font-weight: 600;
+            }
+            
+            .section {
+              margin-bottom: 30px;
+            }
+            
+            .section h3 {
+              color: #495057;
+              font-size: 18px;
+              margin-bottom: 15px;
+              font-weight: 700;
+              border-left: 4px solid #dc3545;
+              padding-left: 15px;
+              background: #f8f9fa;
+              padding-top: 10px;
+              padding-bottom: 10px;
+            }
+            
+            .info-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 15px;
+              margin-bottom: 20px;
+            }
+            
+            .info-item {
+              display: flex;
+              flex-direction: column;
+              padding: 15px;
+              background: #f8f9fa;
+              border-radius: 5px;
+              border: 1px solid #e9ecef;
+            }
+            
+            .info-label {
+              font-weight: 700;
+              color: #495057;
+              font-size: 12px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 5px;
+            }
+            
+            .info-value {
+              color: #212529;
+              font-size: 14px;
+              font-weight: 500;
+            }
+            
+            .full-width {
+              grid-column: 1 / -1;
+            }
+            
+            .reason-box {
+              background: #fff3cd;
+              border: 2px solid #ffc107;
+              border-radius: 8px;
+              padding: 20px;
+              margin: 20px 0;
+            }
+            
+            .reason-box h4 {
+              color: #856404;
+              font-size: 16px;
+              font-weight: 700;
+              margin-bottom: 10px;
+            }
+            
+            .reason-box p {
+              color: #856404;
+              font-size: 14px;
+              line-height: 1.6;
+            }
+            
+            .footer {
+              margin-top: 40px;
+              text-align: center;
+              padding-top: 20px;
+              border-top: 2px solid #dee2e6;
+            }
+            
+            .footer p {
+              color: #6c757d;
+              font-size: 12px;
+              margin-bottom: 5px;
+            }
+            
+            .warning-text {
+              color: #dc3545;
+              font-weight: 700;
+              font-size: 16px;
+              text-align: center;
+              margin-top: 20px;
+              padding: 10px;
+              background: #f8d7da;
+              border-radius: 5px;
+            }
+            
+            /* Print specific styles */
+            @media print {
+              body {
+                padding: 20px 15px;
+                font-size: 12px;
+              }
+              
+              .report-container {
+                box-shadow: none;
+              }
+              
+              .alert-box {
+                background: #f0f0f0 !important;
+                border: 2px solid #000 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+              
+              .section h3 {
+                background: #f0f0f0 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+              
+              .info-item {
+                background: #f8f8f8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+              
+              .reason-box {
+                background: #f5f5f5 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+              }
+            }
+            
+            @media (max-width: 600px) {
+              .info-grid {
+                grid-template-columns: 1fr;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="report-container">
+            <div class="report-header">
+              <h3>Security Guard Blacklist Report</h3>
+              <div class="subtitle">Confidential Document</div>
+            </div>
+            
+            <div class="section">
+              <h3>Personal Information</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">First Name</div>
+                  <div class="info-value">${record.guardName || "N/A"}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Surname</div>
+                  <div class="info-value">${record.surname || "N/A"}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Gender</div>
+                  <div class="info-value">${record.gender || "N/A"}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">ID Number</div>
+                  <div class="info-value">${record.idNumber || "N/A"}</div>
+                </div>
+                <div class="info-item full-width">
+                  <div class="info-label">PSIRA/SOB Number</div>
+                  <div class="info-value">${record.siraSobNo || "N/A"}</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="section">
+              <h3>Reporting Company Information</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">Company Name</div>
+                  <div class="info-value">${
+                    record.registeredBy?.companyName || "N/A"
+                  }</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Contact Person</div>
+                  <div class="info-value">${
+                    record.registeredBy?.username || "N/A"
+                  }</div>
+                </div>
+                <div class="info-item full-width">
+                  <div class="info-label">Phone Number</div>
+                  <div class="info-value">${
+                    record.registeredBy?.phoneNumber || "N/A"
+                  }</div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="section">
+              <h3>Blacklist Details</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <div class="info-label">Date Blacklisted</div>
+                  <div class="info-value">${record.date || "N/A"}</div>
+                </div>
+                <div class="info-item">
+                  <div class="info-label">Reason Category</div>
+                  <div class="info-value">${record.reason || "N/A"}</div>
+                </div>
+              </div>
+              
+              <div class="reason-box">
+                <h4>Detailed Description</h4>
+                <p>${
+                  record.description || "No detailed description provided."
+                }</p>
+              </div>
+              
+              ${
+                record.other
+                  ? `
+                <div class="reason-box">
+                  <h4>Additional Information</h4>
+                  <p>${record.other}</p>
+                </div>
+              `
+                  : ""
+              }
+            </div>
+            
+            <div class="footer">
+              <p><strong>Report Generated:</strong> ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}</p>
+              <p><strong>Document Type:</strong> Security Guard Blacklist Report</p>
+              <p><strong>Status:</strong> Confidential</p>
+            </div>
+          </div>
+          
+          <script>
+            // Auto-print when page loads
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+              }, 500);
+              
+              // Close window after printing
+              window.onafterprint = function() {
+                setTimeout(function() {
+                  window.close();
+                }, 1000);
+              };
+              
+              // Fallback close after 15 seconds
+              setTimeout(function() {
+                window.close();
+              }, 15000);
+            };
+          </script>
+        </body>
+        </html>
+      `);
+
+      printWindow.document.close();
+    } else {
+      alert(
+        "Pop-up blocked! Please allow pop-ups for this site to print the blacklist report."
+      );
+    }
+
+    setIsPrinting(false);
+  };
+
   // Mobile Card Component for displaying records
   const MobileCard = ({ record, index }) => (
     <div
@@ -157,6 +521,19 @@ const BlacklistEnquiry = () => {
             <p className="text-gray-800 mt-1">{record.other}</p>
           </div>
         )}
+
+        {/* Print Button for Mobile */}
+        <div className="pt-3 border-t border-gray-200">
+          <button
+            onClick={() => handlePrintReport(record)}
+            disabled={isPrinting}
+            className={`w-full bg-red-600 rounded-md text-white font-normal p-2 px-4 hover:bg-red-700 transition-colors flex items-center justify-center gap-2 ${
+              isPrinting ? "opacity-50 cursor-not-allowed" : ""
+            }`}>
+            <Printer className="w-4 h-4" />
+            {isPrinting ? "Preparing Report..." : "Print Blacklist Report"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -288,6 +665,9 @@ const BlacklistEnquiry = () => {
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                     Other
                   </th>
+                  <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -332,12 +712,23 @@ const BlacklistEnquiry = () => {
                       <td className="px-4 py-3 text-sm text-gray-700">
                         {record.other}
                       </td>
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => handlePrintReport(record)}
+                          disabled={isPrinting}
+                          className={`bg-red-600 rounded-md text-white font-normal p-2 px-3 hover:bg-red-700 transition-colors flex items-center gap-1 mx-auto ${
+                            isPrinting ? "opacity-50 cursor-not-allowed" : ""
+                          }`}>
+                          <Printer className="w-4 h-4" />
+                          Print
+                        </button>
+                      </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan={12}
+                      colSpan={13}
                       className="border border-gray-300 px-4 py-8 text-center text-gray-500">
                       No blacklist records found matching your search criteria.
                     </td>
