@@ -27,7 +27,8 @@ export async function GET(request) {
         bg.*,
         ru.company_name as reg_company_name,
         ru.phone_no as reg_phone_no,
-        ru.d_user as reg_d_user
+        ru.d_user as reg_d_user,
+        ru.contact_person as reg_contact_person
       FROM blacklistguard bg
       LEFT JOIN registration ru ON bg.reg_user_id = ru.id
     `;
@@ -61,6 +62,7 @@ export async function GET(request) {
         companyName: guard.reg_company_name || "N/A",
         phoneNumber: guard.reg_phone_no || "N/A",
         username: guard.reg_d_user || "N/A",
+        reguser: guard.reg_contact_person || "N/A",
       },
 
       name: guard.name,

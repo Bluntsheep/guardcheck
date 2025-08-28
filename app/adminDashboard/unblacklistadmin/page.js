@@ -82,6 +82,8 @@ const UnblacklistGuardAdmin = () => {
       }
       const data = await response.json();
       if (data.success) {
+        console.log(data.data);
+
         setBlacklistData(data.data);
       } else {
         console.error("Failed to fetch all guards:", data.error);
@@ -191,11 +193,13 @@ const UnblacklistGuardAdmin = () => {
         <div className="grid grid-cols-1 gap-2 text-sm">
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Company:</span>
-            <span className="text-gray-800">{record.companyName}</span>
+            <span className="text-gray-800">
+              {record.registeredBy.companyName}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Contact Person:</span>
-            <span className="text-gray-800">{record.contactPerson}</span>
+            <span className="text-gray-800">{record.reguser}</span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Phone:</span>
@@ -387,10 +391,10 @@ const UnblacklistGuardAdmin = () => {
                           index % 2 === 0 ? "bg-white" : "bg-gray-50"
                         } ${isDeleting ? "opacity-50" : ""}`}>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          {record.companyName}
+                          {record.registeredBy.companyName}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          {record.contactPerson}
+                          {record.registeredBy.reguser}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
                           {record.phoneNumber}
