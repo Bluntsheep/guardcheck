@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Footer from "../components/footer/footer";
+import Footer from "@/app/components/footer/footer";
 
 const ResetPasswordClient = ({ token }) => {
   const router = useRouter();
