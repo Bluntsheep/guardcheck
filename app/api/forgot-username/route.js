@@ -35,7 +35,7 @@ export async function POST(request) {
 
     // Find user by email in the registration table
     const [users] = await connection.execute(
-      "SELECT id, username, email FROM registration WHERE email = ?",
+      "SELECT id, d_user, email FROM registration WHERE email = ?",
       [email.toLowerCase()]
     );
 
@@ -51,13 +51,35 @@ export async function POST(request) {
     const user = users[0];
 
     // Create email transporter (configure with your email service)
-    const transporter = nodemailer.createTransporter({
-      service: "gmail", // or your email service
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST, // e.g., 'smtp.yourdomain.com'
+      port: process.env.SMTP_PORT || 587,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
+
+    const getBaseUrl = (request) => {
+      if (process.env.NEXT_PUBLIC_BASE_URL) {
+        return process.env.NEXT_PUBLIC_BASE_URL;
+      }
+
+      // Try to get from request headers
+      const host = request.headers.get("host");
+      const protocol = request.headers.get("x-forwarded-proto") || "http";
+
+      if (host) {
+        return `${protocol}://${host}`;
+      }
+
+      // Fallback
+      return "http://localhost:3000";
+    };
+
+    const baseUrl = getBaseUrl(request);
+    const resetUrl = `${baseUrl}/`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -70,11 +92,11 @@ export async function POST(request) {
           <p>You requested your username recovery. Here are the details for your account:</p>
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #167BA9;">
             <h3 style="margin: 0; color: #167BA9;">Your Username:</h3>
-            <p style="font-size: 18px; font-weight: bold; margin: 10px 0; color: #333;">${user.username}</p>
+            <p style="font-size: 18px; font-weight: bold; margin: 10px 0; color: #333;">${user.d_user}</p>
           </div>
           <p>You can now use this username to log into your account.</p>
           <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.NEXT_PUBLIC_BASE_URL}/login" style="background-color: #167BA9; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Login</a>
+            <a href="${resetUrl}" style="background-color: #167BA9; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Go to Login</a>
           </div>
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
           <p style="color: #666; font-size: 12px;">If you didn't request this username recovery, please contact support immediately for security reasons.</p>
