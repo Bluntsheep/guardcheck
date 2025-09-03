@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Footer from "../components/footer/footer";
 import { useRouter } from "next/navigation";
 import {
@@ -105,6 +105,16 @@ const UnblacklistGuard = () => {
       console.error("Error during search:", error);
     }
   };
+
+  useEffect(() => {
+    const getUseBlacklisted = async () => {
+      const data = await fetch("/api/getbyid");
+
+      const blacklisted = await data.json();
+
+      setBlacklistData(blacklistData);
+    };
+  });
 
   const handleDelete = async (record) => {
     // Confirm deletion
@@ -307,7 +317,7 @@ const UnblacklistGuard = () => {
               </div>
 
               <div className={`${showFilters ? "block" : "hidden"} sm:block`}>
-                <div className="flex items-center gap-2 flex-col sm:flex-row">
+                {/* <div className="flex items-center gap-2 flex-col sm:flex-row">
                   <span className="text-sm text-gray-600 hidden sm:inline">
                     Search:
                   </span>
@@ -321,7 +331,7 @@ const UnblacklistGuard = () => {
                       className="border border-gray-300 rounded pl-10 pr-4 py-2 text-sm w-full sm:w-64"
                     />
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
