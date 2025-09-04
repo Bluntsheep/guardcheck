@@ -97,6 +97,7 @@ export async function GET(request) {
       guardName: guard.name,
       surname: guard.surname,
       idNumber: guard.idnumber,
+      gender: guard.gender,
       siraSobNo: guard.sira_sob_no,
       reason: guard.reason || "N/A",
       description: guard.description || "N/A",

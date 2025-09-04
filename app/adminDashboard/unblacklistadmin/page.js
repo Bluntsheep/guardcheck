@@ -199,11 +199,15 @@ const UnblacklistGuardAdmin = () => {
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Contact Person:</span>
-            <span className="text-gray-800">{record.reguser}</span>
+            <span className="text-gray-800">
+              {record.registeredBy.username}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Phone:</span>
-            <span className="text-gray-800">{record.phoneNumber}</span>
+            <span className="text-gray-800">
+              {record.registeredBy.phoneNumber}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Guard Name:</span>

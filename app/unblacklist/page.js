@@ -275,15 +275,11 @@ const UnblacklistGuard = () => {
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Contact Person:</span>
-            <span className="text-gray-800">
-              {record.registeredBy.contactPerson}
-            </span>
+            <span className="text-gray-800">{record.registeredBy.dUser}</span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Phone:</span>
-            <span className="text-gray-800">
-              {record.registeredBy.phoneNumber}
-            </span>
+            <span className="text-gray-800">{record.registeredBy.phoneNo}</span>
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">Guard Name:</span>
