@@ -87,8 +87,8 @@ export async function GET(request) {
       registeredBy: {
         userId: guard.reg_user_id,
         companyName: guard.reg_company_name || "N/A",
-        phoneNumber: guard.reg_phone_no || "N/A",
-        username: guard.reg_d_user || "N/A",
+        phoneNo: guard.reg_phone_no || "N/A",
+        dUser: guard.reg_d_user || "N/A",
       },
 
       // Keep original fields for backwards compatibility
