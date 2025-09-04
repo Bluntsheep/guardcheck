@@ -394,10 +394,10 @@ const UnblacklistGuardAdmin = () => {
                           {record.registeredBy.companyName}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          {record.registeredBy.reguser}
+                          {record.registeredBy.username}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          {record.phoneNumber}
+                          {record.registeredBy.phoneNumber}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
                           {record.guardName}
