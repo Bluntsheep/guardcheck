@@ -110,15 +110,15 @@ const CvUpdateFull = () => {
                 id="g_area"
                 name="g_area">
                 <option value="Select Region">Select Region</option>
-                <option value="Eastern Cape">Eastern Cape</option>
-                <option value="Free State">Free State</option>
-                <option value="Gauteng">Gauteng</option>
-                <option value="Kwazulu-Natal">Kwazulu-Natal</option>
-                <option value="Mpumalanga">Mpumalanga</option>
-                <option value="Northen Cape">Northen Cape</option>
-                <option value="Limpopo">Limpopo</option>
-                <option value="North West Province">North West Province</option>
-                <option value="Western Cape">Western Cape</option>
+                <option value="EC">Eastern Cape</option>
+                <option value="FS">Free State</option>
+                <option value="GP">Gauteng</option>
+                <option value="KZN">Kwazulu-Natal</option>
+                <option value="PM">Mpumalanga</option>
+                <option value="NC">Northen Cape</option>
+                <option value="LP">Limpopo</option>
+                <option value="NWP">North West Province</option>
+                <option value="WC">Western Cape</option>
               </select>
             </div>
             <div className="flex gap-8 mx-8">

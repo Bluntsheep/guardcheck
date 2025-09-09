@@ -9,11 +9,29 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 60000,
-  idleTimeout: 300000,
+  queueLimit: 50,
+  connectTimeout: 60000, // ✅ Valid - connection timeout
+  // acquireTimeout: 60000,     // ❌ Remove - invalid for pools
+  // timeout: 40000,            // ❌ Remove - invalid for pools
+  // reconnect: true,           // ❌ Remove - invalid for pools
   charset: "utf8mb4",
   timezone: "+00:00",
+  multipleStatements: false, // ✅ Valid - security best practice
+  ssl: false, // ✅ Valid - set to true if host requires SSL
+});
+
+// Add error handling for the pool
+pool.on("error", (err) => {
+  console.error("Database pool error:", err);
+  if (err.code === "PROTOCOL_CONNECTION_LOST") {
+    console.log("Database connection was closed.");
+  }
+  if (err.code === "ER_CON_COUNT_ERROR") {
+    console.log("Database has too many connections.");
+  }
+  if (err.code === "ECONNREFUSED") {
+    console.log("Database connection was refused.");
+  }
 });
 
 // GET request to find guards by area
@@ -106,6 +124,9 @@ export async function POST(request) {
     // Get connection from pool
     connection = await pool.getConnection();
 
+    // Start transaction explicitly
+    await connection.beginTransaction();
+
     const body = await request.json();
     console.log("Received guard CV data:", body);
 
@@ -113,6 +134,7 @@ export async function POST(request) {
     const requiredFields = ["name", "surname", "idnum", "snum", "phonenum"];
     for (const field of requiredFields) {
       if (!body[field] || body[field].trim() === "") {
+        await connection.rollback();
         return Response.json(
           { error: `${field} is required` },
           { status: 400 }
@@ -120,7 +142,7 @@ export async function POST(request) {
       }
     }
 
-    // Extract data from request body (equivalent to PHP's extract($_POST))
+    // Extract data from request body
     const {
       name,
       surname,
@@ -135,7 +157,7 @@ export async function POST(request) {
       guard_type,
     } = body;
 
-    // Get current timestamp (equivalent to PHP's time())
+    // Get current timestamp
     const time = Math.floor(Date.now() / 1000);
 
     // Check if CV already exists for this snum
@@ -145,6 +167,7 @@ export async function POST(request) {
     );
 
     if (existingCV.length > 0) {
+      await connection.rollback();
       return Response.json(
         {
           error:
@@ -161,6 +184,7 @@ export async function POST(request) {
     );
 
     if (blacklisted.length > 0) {
+      await connection.rollback();
       return Response.json(
         { error: "Sorry you are blacklisted and you cannot upload your CV." },
         { status: 400 }
@@ -168,6 +192,21 @@ export async function POST(request) {
     }
 
     // Insert new guard CV
+    console.log("Inserting CV with data:", {
+      time,
+      name,
+      surname,
+      idnum,
+      snum,
+      phonenum,
+      g_area,
+      g_hgrade,
+      pexp,
+      gender,
+      town,
+      guard_type,
+    });
+
     const [result] = await connection.execute(
       `INSERT INTO guard_cv (
         extra, name, surname, idnum, snum, phonenum, area, hgrade, pexp, gender, town, guard_type
@@ -188,17 +227,41 @@ export async function POST(request) {
       ]
     );
 
+    // Commit the transaction
+    await connection.commit();
+
     console.log("Guard CV upload successful, ID:", result.insertId);
 
-    // Return success response (equivalent to PHP's echo "1")
+    // Verify the insert by selecting the record
+    const [verification] = await connection.execute(
+      "SELECT * FROM guard_cv WHERE guardcv_id = ?",
+      [result.insertId]
+    );
+
+    console.log("Verification query result:", verification);
+
+    // Return success response
     return Response.json({
       success: true,
       message: "CV uploaded successfully",
-      response: "1", // Matching PHP response
+      response: "1",
       id: result.insertId,
+      verification:
+        verification.length > 0
+          ? "Record found in database"
+          : "Record NOT found in database",
     });
   } catch (error) {
     console.error("Guard CV upload error:", error);
+
+    // Rollback transaction on error
+    if (connection) {
+      try {
+        await connection.rollback();
+      } catch (rollbackError) {
+        console.error("Rollback error:", rollbackError);
+      }
+    }
 
     // Handle specific MySQL errors
     if (error.code === "ER_DUP_ENTRY") {
@@ -222,57 +285,6 @@ export async function POST(request) {
     );
   } finally {
     // Release connection back to pool
-    if (connection) {
-      connection.release();
-    }
-  }
-}
-
-export async function DELETE(request) {
-  let connection;
-  try {
-    connection = await pool.getConnection();
-
-    // Extract the ID from the URL search parameters
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return Response.json(
-        { error: "CV ID is required for deletion." },
-        { status: 400 }
-      );
-    }
-
-    // SQL query to delete the row with the specified ID
-    const query = "DELETE FROM guard_cv WHERE guardcv_id = ?";
-    const queryParams = [id];
-
-    console.log("Executing delete query for ID:", id);
-
-    // Execute the delete query
-    const [result] = await connection.execute(query, queryParams);
-
-    if (result.affectedRows === 0) {
-      // If no rows were affected, the CV with that ID was not found
-      return Response.json({ error: "CV not found." }, { status: 404 });
-    }
-
-    return Response.json(
-      { message: `CV with ID ${id} deleted successfully.` },
-      { status: 200 }
-    );
-  } catch (error) {
-    console.error("Error deleting CV:", error);
-    return Response.json(
-      {
-        error: "Failed to delete CV. Please try again.",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
-      },
-      { status: 500 }
-    );
-  } finally {
     if (connection) {
       connection.release();
     }
