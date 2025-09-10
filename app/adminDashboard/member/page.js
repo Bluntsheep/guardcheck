@@ -246,11 +246,11 @@ const Member = () => {
           </div>
           <div className="flex justify-between">
             <span className="font-semibold text-gray-600">
-              Registration Date:
+              Registration Date: {account.reg_date}
             </span>
-            <span className="text-gray-800">
+            {/* <span className="text-gray-800">
               {new Date(account.reg_date).toLocaleDateString()}
-            </span>
+            </span> */}
           </div>
 
           {/* Action Button for Mobile */}

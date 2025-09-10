@@ -37,6 +37,27 @@ const AdminDashboard = () => {
     return active === 1 || active === "1" || active === true;
   };
 
+  // Helper function to get date color based on age
+  const getDateColorClass = (dateString) => {
+    if (!dateString) return "text-gray-800";
+
+    const registrationDate = new Date(dateString);
+    const currentDate = new Date();
+
+    // Calculate the difference in months
+    const monthsDiff =
+      (currentDate.getFullYear() - registrationDate.getFullYear()) * 12 +
+      (currentDate.getMonth() - registrationDate.getMonth());
+
+    if (monthsDiff >= 12) {
+      return "text-red-600 font-semibold"; // Red for 12+ months
+    } else if (monthsDiff >= 11) {
+      return "text-orange-600 font-semibold"; // Orange for 11+ months
+    } else {
+      return "text-gray-800"; // Default color for less than 11 months
+    }
+  };
+
   const filteredData = useMemo(() => {
     let filtered = accountsData;
 
@@ -293,7 +314,7 @@ const AdminDashboard = () => {
             <span className="font-semibold text-gray-600">
               Registration Date:
             </span>
-            <span className="text-gray-800">
+            <span className={getDateColorClass(account.reg_date)}>
               {new Date(account.reg_date).toLocaleDateString()}
             </span>
           </div>
@@ -500,7 +521,10 @@ const AdminDashboard = () => {
                         <td className="px-4 py-3 text-sm text-gray-700">
                           {account.sira_sob_no}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-700">
+                        <td
+                          className={`px-4 py-3 text-sm ${getDateColorClass(
+                            account.reg_date
+                          )}`}>
                           {new Date(account.reg_date).toLocaleDateString()}
                         </td>
                         <td className="px-4 py-3 text-center">
