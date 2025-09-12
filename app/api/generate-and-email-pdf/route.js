@@ -65,8 +65,8 @@ export async function POST(request) {
     // Set viewport for consistent rendering
     await page.setViewport({ width: 1200, height: 1600 });
 
-    // Create the HTML content directly with the quote template
-    const htmlContent = generateQuoteHTML(data);
+    // Create the HTML content with type parameter
+    const htmlContent = generateDocumentHTML(data, type);
 
     // Set the HTML content
     await page.setContent(htmlContent, {
@@ -202,15 +202,20 @@ Guard Check Accounts Team`;
   }
 }
 
-// Generate HTML content for the quote
-function generateQuoteHTML(data) {
+// Generate HTML content for quote or invoice
+function generateDocumentHTML(data, type = "quote") {
+  const isInvoice = type === "invoice";
+  const documentTitle = isInvoice ? "INVOICE" : "QUOTATION";
+  const documentNumber = isInvoice ? data.invoiceNumber : data.quoteNumber;
+  const documentDate = isInvoice ? data.invoiceDate : data.quoteDate;
+
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guard Check Quote</title>
+    <title>Guard Check ${isInvoice ? "Invoice" : "Quote"}</title>
     <style>
         * {
             margin: 0;
@@ -441,9 +446,21 @@ function generateQuoteHTML(data) {
                 <h1>GUARD CHECK</h1>
             </div>
             <div class="quote-info">
-                <h2>QUOTATION</h2>
-                <p><span class="label">Quote #:</span> ${data.quoteNumber}</p>
-                <p><span class="label">Date:</span> ${data.quoteDate}</p>
+                <h2>${documentTitle}</h2>
+                <p><span class="label">${
+                  isInvoice ? "Invoice" : "Quote"
+                } #:</span> ${documentNumber}</p>
+                <p><span class="label">Date:</span> ${documentDate}</p>
+                ${
+                  isInvoice && data.dueDate
+                    ? `<p><span class="label">Due Date:</span> ${data.dueDate}</p>`
+                    : ""
+                }
+                ${
+                  !isInvoice && data.validUntil
+                    ? `<p><span class="label">Valid Until:</span> ${data.validUntil}</p>`
+                    : ""
+                }
             </div>
         </div>
 
@@ -472,7 +489,7 @@ function generateQuoteHTML(data) {
 
         <!-- Items Table -->
         <div class="items-section">
-            <h3>Subscription Details</h3>
+            <h3>${isInvoice ? "Services Provided" : "Subscription Details"}</h3>
             <table class="items-table">
                 <thead>
                     <tr>
@@ -510,6 +527,21 @@ function generateQuoteHTML(data) {
                       { minimumFractionDigits: 2 }
                     )}</td>
                 </tr>
+                ${
+                  isInvoice && data.amountDue !== undefined
+                    ? `
+                <tr style="background-color: ${
+                  data.amountDue > 0 ? "#dc2626" : "#16a34a"
+                }; color: white;">
+                    <td class="text-right">Amount Due:</td>
+                    <td class="text-right">R${data.amountDue.toLocaleString(
+                      "en-ZA",
+                      { minimumFractionDigits: 2 }
+                    )}</td>
+                </tr>
+                `
+                    : ""
+                }
             </table>
         </div>
 
@@ -524,15 +556,27 @@ function generateQuoteHTML(data) {
                 <p><span class="label">Account Type:</span> ${
                   data.banking.accountType
                 }</p>
-                <p><span class="label">Reference:</span> ${data.quoteNumber}</p>
+                <p><span class="label">Reference:</span> ${documentNumber}</p>
             </div>
         </div>
 
         <!-- Payment Notice -->
         <div class="notice-section">
             <div class="notice-box">
-                <h3>Payment Instructions</h3>
-                <p>Payment can be made via EFT into our bank account. Once the funds have cleared, your account will be activated.</p>
+                <h3>${
+                  isInvoice
+                    ? data.amountDue > 0
+                      ? "Payment Required"
+                      : "Payment Received - Thank You!"
+                    : "Payment Instructions"
+                }</h3>
+                <p>${
+                  isInvoice
+                    ? data.amountDue > 0
+                      ? "Payment is required for this invoice. Please use the banking details below."
+                      : "Thank you for your payment. Your account has been activated and you can now access all premium features."
+                    : "Payment can be made via EFT into our bank account. Once the funds have cleared, your account will be activated."
+                }</p>
             </div>
         </div>
 

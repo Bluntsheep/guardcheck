@@ -466,7 +466,7 @@ const AdminDashboard = () => {
                     PSIRA/SOB
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Registration Date
+                    Activation Date
                   </th>
                   <th className="px-4 py-3 text-center text-sm font-semibold text-gray-700">
                     Actions
@@ -523,9 +523,20 @@ const AdminDashboard = () => {
                         </td>
                         <td
                           className={`px-4 py-3 text-sm ${getDateColorClass(
-                            account.reg_date
+                            account.active_date
                           )}`}>
-                          {new Date(account.reg_date).toLocaleDateString()}
+                          {(() => {
+                            // Check if account is not active (0 or false)
+                            if (!account.active || account.active === 0)
+                              return "Not Active";
+
+                            if (!account.active_date) return "Not Active";
+
+                            const date = new Date(account.active_date);
+                            if (isNaN(date.getTime())) return "Not Active";
+
+                            return date.toLocaleDateString();
+                          })()}
                         </td>
                         <td className="px-4 py-3 text-center">
                           <button
