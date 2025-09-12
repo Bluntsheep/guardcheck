@@ -243,22 +243,20 @@ export async function POST(request) {
 
     // Send quote email (async, don't wait for it)
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      // const baseUrl =
+      //   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-      const emailResponse = await fetch(
-        `${baseUrl}/api/generate-and-email-pdf`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type: "quote",
-            data: quoteData,
-            emailTo: email,
-            sendEmail: true,
-            customMessage: `Dear ${contactperson},
+      const emailResponse = await fetch(`/api/generate-and-email-pdf`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type: "quote",
+          data: quoteData,
+          emailTo: email,
+          sendEmail: true,
+          customMessage: `Dear ${contactperson},
 
 Thank you for registering with Guard Check! We're excited to have you join our community.
 
@@ -268,8 +266,8 @@ Quote Details:
 - Quote Number: ${quoteNumber}
 - Valid Until: ${quoteData.validUntil}
 - Total Amount: R${quoteData.total.toLocaleString("en-ZA", {
-              minimumFractionDigits: 2,
-            })}
+            minimumFractionDigits: 2,
+          })}
 
 Next Steps:
 1. Review the attached quote
@@ -285,9 +283,8 @@ Best regards,
 The Guard Check Team
 Email: info@guardcheck.com
 Phone: 012-492-9089`,
-          }),
-        }
-      );
+        }),
+      });
 
       if (!emailResponse.ok) {
         console.error(
