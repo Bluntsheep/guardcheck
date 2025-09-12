@@ -16,6 +16,13 @@ const pool = mysql.createPool({
   timezone: "+00:00",
 });
 
+function getBaseUrl(request) {
+  const headers = request.headers;
+  const protocol = headers.get("x-forwarded-proto") || "http";
+  const host = headers.get("x-forwarded-host") || headers.get("host");
+  return `${protocol}://${host}`;
+}
+
 export async function GET() {
   let connection;
 
@@ -354,10 +361,8 @@ export async function PATCH(request) {
         // Commit the transaction after successful invoice save
         await connection.commit();
 
-        const baseUrl =
-          process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+        const baseUrl = getBaseUrl(request);
 
-        // Send activation email with invoice
         const emailResponse = await fetch(
           `${baseUrl}/api/generate-and-email-pdf`,
           {
