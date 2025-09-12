@@ -140,6 +140,111 @@ const createInvoiceData = (userData, invoiceNumber) => {
   };
 };
 
+// Save invoice to database
+const saveInvoiceToDatabase = async (
+  connection,
+  invoiceData,
+  registrationId
+) => {
+  try {
+    // Convert date strings to MySQL date format
+    const formatDateForMySQL = (dateString) => {
+      const date = new Date(dateString);
+      return date.toISOString().split("T")[0]; // YYYY-MM-DD format
+    };
+
+    // Insert into invoices table
+    const invoiceInsertQuery = `
+      INSERT INTO invoices (
+        invoice_number,
+        registration_id,
+        invoice_date,
+        due_date,
+        status,
+        company_name,
+        company_address,
+        company_city,
+        company_phone,
+        company_email,
+        company_website,
+        client_name,
+        client_contact_person,
+        client_address,
+        client_city,
+        client_phone,
+        client_email,
+        subtotal,
+        vat_amount,
+        total_amount,
+        amount_due,
+        bank_name,
+        account_number,
+        account_type
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const [invoiceResult] = await connection.execute(invoiceInsertQuery, [
+      invoiceData.invoiceNumber,
+      registrationId,
+      formatDateForMySQL(invoiceData.invoiceDate),
+      formatDateForMySQL(invoiceData.dueDate),
+      invoiceData.status,
+      invoiceData.company.name,
+      invoiceData.company.address,
+      invoiceData.company.city,
+      invoiceData.company.phone,
+      invoiceData.company.email,
+      invoiceData.company.website,
+      invoiceData.client.name,
+      invoiceData.client.contactPerson,
+      invoiceData.client.address,
+      invoiceData.client.city,
+      invoiceData.client.phone,
+      invoiceData.client.email,
+      invoiceData.subtotal,
+      invoiceData.vat,
+      invoiceData.total,
+      invoiceData.amountDue,
+      invoiceData.banking.bank,
+      invoiceData.banking.accountNumber,
+      invoiceData.banking.accountType,
+    ]);
+
+    const invoiceId = invoiceResult.insertId;
+
+    // Insert invoice items
+    const itemInsertQuery = `
+      INSERT INTO invoice_items (
+        invoice_id,
+        item_number,
+        description,
+        coverage,
+        premium,
+        quantity
+      ) VALUES (?, ?, ?, ?, ?, ?)
+    `;
+
+    for (const item of invoiceData.items) {
+      await connection.execute(itemInsertQuery, [
+        invoiceId,
+        item.id,
+        item.description,
+        item.coverage,
+        item.premium,
+        item.quantity,
+      ]);
+    }
+
+    console.log(
+      `Invoice ${invoiceData.invoiceNumber} saved to database with ID: ${invoiceId}`
+    );
+    return invoiceId;
+  } catch (error) {
+    console.error("Error saving invoice to database:", error);
+    throw error;
+  }
+};
+
 export async function PATCH(request) {
   let connection;
 
@@ -173,6 +278,9 @@ export async function PATCH(request) {
     // Get connection from pool
     connection = await pool.getConnection();
 
+    // Start transaction
+    await connection.beginTransaction();
+
     // Get the full account details including email
     const [existingAccount] = await connection.execute(
       "SELECT * FROM registration WHERE id = ?",
@@ -180,6 +288,7 @@ export async function PATCH(request) {
     );
 
     if (existingAccount.length === 0) {
+      await connection.rollback();
       return NextResponse.json(
         {
           success: false,
@@ -193,6 +302,7 @@ export async function PATCH(request) {
 
     // Check if the status is already the desired value
     if (account.active === active) {
+      await connection.rollback();
       return NextResponse.json({
         success: true,
         message: `Account is already ${active === 1 ? "active" : "inactive"}`,
@@ -214,6 +324,7 @@ export async function PATCH(request) {
     );
 
     if (result.affectedRows === 0) {
+      await connection.rollback();
       return NextResponse.json(
         {
           success: false,
@@ -229,11 +340,19 @@ export async function PATCH(request) {
       }`
     );
 
-    // If activating the account, send activation email with invoice
+    let invoiceId = null;
+
+    // If activating the account, create and save invoice, then send activation email
     if (active === 1) {
       try {
         const invoiceNumber = generateInvoiceRef();
         const invoiceData = createInvoiceData(account, invoiceNumber);
+
+        // Save invoice to database first
+        invoiceId = await saveInvoiceToDatabase(connection, invoiceData, id);
+
+        // Commit the transaction after successful invoice save
+        await connection.commit();
 
         const baseUrl =
           process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
@@ -262,6 +381,7 @@ Account Details:
 - Username: ${account.d_user}
 - Activation Date: ${getSouthAfricaDateTime()}
 - Subscription: Annual Premium Access
+- Invoice Number: ${invoiceNumber}
 
 Please find attached your invoice for this subscription. Your account will remain active for 12 months from the activation date.
 
@@ -287,17 +407,28 @@ Phone: 012-492-9089`,
         } else {
           console.log("Activation email with invoice sent successfully");
         }
-      } catch (emailError) {
-        console.error("Error sending activation email:", emailError);
-        // Don't fail the activation if email fails
+      } catch (error) {
+        await connection.rollback();
+        console.error("Error in activation process:", error);
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Failed to activate account and create invoice: " + error.message,
+          },
+          { status: 500 }
+        );
       }
+    } else {
+      // Just commit the deactivation
+      await connection.commit();
     }
 
     return NextResponse.json({
       success: true,
       message: `Account successfully ${
         active === 1 ? "activated" : "deactivated"
-      }${active === 1 ? ". Activation email sent." : ""}`,
+      }${active === 1 ? ". Activation email sent and invoice created." : ""}`,
       data: {
         id: parseInt(id),
         company_name: account.company_name,
@@ -305,6 +436,7 @@ Phone: 012-492-9089`,
         active: active,
         active_date: active === 1 ? getSouthAfricaDateTime() : null,
         previousActive: account.active,
+        invoiceId: invoiceId,
         updatedAt: new Date().toISOString(),
       },
     });
