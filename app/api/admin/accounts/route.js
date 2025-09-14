@@ -377,9 +377,9 @@ export async function PATCH(request) {
               sendEmail: true,
               customMessage: `Dear ${account.contact_person},
 
-Congratulations! Your Guard Check account has been successfully activated!
+Congratulations! Your GUARDCHECK.COM  account has been successfully activated!
 
-Your premium access subscription is now active and you can start using all Guard Check features immediately.
+Your premium access subscription is now active and you can start using all GUARDCHECK.COM  features immediately.
 
 Account Details:
 - Company: ${account.company_name}
@@ -390,14 +390,14 @@ Account Details:
 
 Please find attached your invoice for this subscription. Your account will remain active for 12 months from the activation date.
 
-Login to your account to start using Guard Check's premium security verification services.
+Login to your account to start using GUARDCHECK.COM 's premium security verification services.
 
 If you have any questions or need assistance, please don't hesitate to contact our support team.
 
-Welcome to Guard Check Premium!
+Welcome to GUARDCHECK.COM  Premium!
 
 Best regards,
-The Guard Check Team
+The GUARDCHECK.COM  Team
 Email: info@guardcheck.com
 Phone: 012-492-9089`,
             }),
