@@ -69,7 +69,7 @@ export default function GuardriskInvoiceTemplate({ invoiceData }) {
         <div className="flex justify-between items-center mb-8 pb-6 border-b-4 border-green-600">
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-green-600 mb-2">
-              GUARDCHECK
+              GUARDCHECK.COM
             </h1>
           </div>
           <div className="text-right flex-1">
@@ -205,8 +205,8 @@ export default function GuardriskInvoiceTemplate({ invoiceData }) {
             <h3 className="font-bold text-blue-800 mb-2">Account Activation</h3>
             <div className="text-blue-800 text-sm space-y-1">
               <p>
-                Your GuardCheck subscription has been activated and is now ready
-                for use.
+                Your GUARDCHECK.COM subscription has been activated and is now
+                ready for use.
               </p>
               <p>
                 <span className="font-semibold">Subscription starts:</span>{" "}

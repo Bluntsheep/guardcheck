@@ -67,7 +67,7 @@ const createQuoteData = (userData, quoteNumber) => {
     items: [
       {
         id: 1,
-        description: "GuardCheck - Yearly Subscription",
+        description: "GUARDCHECK.COM - Yearly Subscription",
         coverage: "Annual Premium Access",
         premium: 2850.0,
         quantity: 1,
@@ -281,7 +281,7 @@ Next Steps:
 1. Review the attached quote
 2. Make payment using the banking details provided
 3. Your account will be activated once payment is confirmed
-4. Start using Guard Check's premium features immediately
+4. Start using GUARDCHECK.COM premium features immediately
 
 If you have any questions about your quote or our services, please don't hesitate to contact us.
 

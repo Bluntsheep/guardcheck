@@ -1,6 +1,25 @@
 import puppeteer from "puppeteer";
 import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
+
+// Function to convert logo to base64
+function getBase64Logo() {
+  try {
+    const logoPath = path.join(
+      process.cwd(),
+      "public",
+      "guard_check_logo.jpeg"
+    );
+    const imageBuffer = fs.readFileSync(logoPath);
+    const base64Image = imageBuffer.toString("base64");
+    return `data:image/jpeg;base64,${base64Image}`;
+  } catch (error) {
+    console.error("Error reading logo file:", error);
+    return null;
+  }
+}
 
 // Email transporter configuration using your SMTP settings
 const createTransporter = () => {
@@ -113,13 +132,13 @@ export async function POST(request) {
     const clientName = data.client?.name || "Valued Client";
 
     // Email content
-    const subject = `Guard Check ${documentType} #${documentNumber}`;
+    const subject = `GUARDCHECK.COM  ${documentType} #${documentNumber}`;
 
     const defaultMessage =
       type === "quote"
         ? `Dear ${clientName},
 
-Please find attached your premium access quote from Guard Check.
+Please find attached your premium access quote from GUARDCHECK.COM .
 
 Quote Details:
 - Quote Number: ${documentNumber}
@@ -131,10 +150,10 @@ Quote Details:
 This quote is valid for 30 days. Please contact us if you have any questions or would like to proceed with your premium access subscription.
 
 Best regards,
-Guard Check Team`
+GUARDCHECK.COM  Team`
         : `Dear ${clientName},
 
-Please find attached your invoice from Guard Check.
+Please find attached your invoice from GUARDCHECK.COM.
 
 Invoice Details:
 - Invoice Number: ${documentNumber}
@@ -147,13 +166,13 @@ Invoice Details:
 Payment can be made via bank transfer using the details provided in the invoice.
 
 Best regards,
-Guard Check Accounts Team`;
+GUARDCHECK.COM Accounts Team`;
 
     const emailContent = customMessage || defaultMessage;
 
     const mailOptions = {
       from: {
-        name: process.env.FROM_NAME || "Guard Check",
+        name: process.env.FROM_NAME || "GUARDCHECK.COM",
         address: process.env.EMAIL_USER,
       },
       to: emailTo,
@@ -209,13 +228,19 @@ function generateDocumentHTML(data, type = "quote") {
   const documentNumber = isInvoice ? data.invoiceNumber : data.quoteNumber;
   const documentDate = isInvoice ? data.invoiceDate : data.quoteDate;
 
+  // Get base64 logo
+  const base64Logo = getBase64Logo();
+  const companyLogo = base64Logo
+    ? `<img src="${base64Logo}" alt="GuardCheck.com Logo" />`
+    : `<h1>GUARDCHECK.COM</h1>`;
+
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guard Check ${isInvoice ? "Invoice" : "Quote"}</title>
+    <title>GUARDCHECK.COM ${isInvoice ? "Invoice" : "Quote"}</title>
     <style>
         * {
             margin: 0;
@@ -245,6 +270,19 @@ function generateDocumentHTML(data, type = "quote") {
             margin-bottom: 30px;
             padding-bottom: 20px;
             border-bottom: 4px solid #1e40af;
+        }
+        
+        .company-logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .company-logo img {
+            max-height: 60px;
+            max-width: 200px;
+            height: auto;
+            width: auto;
+            object-fit: contain;
         }
         
         .company-logo h1 {
@@ -443,7 +481,7 @@ function generateDocumentHTML(data, type = "quote") {
         <!-- Header -->
         <div class="header">
             <div class="company-logo">
-                <h1>GUARD CHECK</h1>
+                ${companyLogo}
             </div>
             <div class="quote-info">
                 <h2>${documentTitle}</h2>
@@ -468,9 +506,8 @@ function generateDocumentHTML(data, type = "quote") {
         <div class="info-section">
             <div class="info-box">
                 <h3>From:</h3>
-                <p class="highlight">${data.company.name}</p>
+                <p class="highlight">GUARDCHECK.COM (Pty) Ltd</p>
                 <p>${data.company.address}</p>
-                <p>${data.company.city}</p>
                 <p>Phone: ${data.company.phone}</p>
                 <p>Email: ${data.company.email}</p>
                 <p>Web: ${data.company.website}</p>
@@ -556,7 +593,7 @@ function generateDocumentHTML(data, type = "quote") {
                 <p><span class="label">Account Type:</span> ${
                   data.banking.accountType
                 }</p>
-                <p><span class="label">Reference:</span> ${documentNumber}</p>
+                <p><span class="label">Reference:</span> ${data.client.name}</p>
             </div>
         </div>
 
