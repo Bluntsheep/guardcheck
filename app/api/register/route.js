@@ -266,9 +266,9 @@ export async function POST(request) {
             sendEmail: true,
             customMessage: `Dear ${contactperson},
 
-Thank you for registering with Guard Check! We're excited to have you join our community.
+Thank you for registering with GUARDCHECK.COM! We're excited to have you join our community.
 
-Please find attached your personalized quote for Guard Check premium access. This comprehensive solution will provide you with advanced security verification and background checking capabilities.
+Please find attached your personalized quote for GUARDCHECK.COM premium access. This comprehensive solution will provide you with advanced security verification and background checking capabilities.
 
 Quote Details:
 - Quote Number: ${quoteNumber}
