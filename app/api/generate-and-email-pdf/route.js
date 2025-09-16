@@ -278,8 +278,8 @@ function generateDocumentHTML(data, type = "quote") {
         }
         
         .company-logo img {
-            max-height: 60px;
-            max-width: 200px;
+            max-height: 90px;
+            max-width: 300px;
             height: auto;
             width: auto;
             object-fit: contain;
