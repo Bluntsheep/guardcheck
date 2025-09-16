@@ -109,11 +109,11 @@ const createInvoiceData = (userData, invoiceNumber) => {
     dueDate,
     status: "paid",
     company: {
-      name: "Guard Check (Pty) Ltd",
-      address: "123 Business Street",
+      name: "GUARDCHECK.COM (Pty) Ltd",
+      address: "Postnet Suite 103, Private bag X0003, Ifafi, 0260",
       city: "Cape Town, 8001",
-      phone: "+27 21 123 4567",
-      email: "accounts@guardcheck.com",
+      phone: "012-492-9089",
+      email: "info@guardcheck.com",
       website: "www.guardcheck.com",
     },
     client: {

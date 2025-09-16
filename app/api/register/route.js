@@ -47,7 +47,7 @@ const createQuoteData = (userData, quoteNumber) => {
     validUntil,
     status: "pending",
     company: {
-      name: "Guard Check (Pty) Ltd",
+      name: "GUARDCHECK.COM (Pty) Ltd",
       address: "Postnet Suite 103, Private bag X0003, Ifafi, 0260",
       city: "Cape Town, 8001",
       phone: "012-492-9089",

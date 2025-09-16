@@ -4,6 +4,21 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 
+function formatDateToDDMMYY(dateInput) {
+  if (!dateInput) return "";
+
+  const date = new Date(dateInput);
+
+  // Check if date is valid
+  if (isNaN(date.getTime())) return dateInput; // Return original if invalid
+
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() is 0-indexed
+  const year = String(date.getFullYear()).slice(-2); // Get last 2 digits
+
+  return `${day}/${month}/${year}`;
+}
+
 // Function to convert logo to base64
 function getBase64Logo() {
   try {
@@ -488,15 +503,21 @@ function generateDocumentHTML(data, type = "quote") {
                 <p><span class="label">${
                   isInvoice ? "Invoice" : "Quote"
                 } #:</span> ${documentNumber}</p>
-                <p><span class="label">Date:</span> ${documentDate}</p>
+                <p><span class="label">Date:</span> ${formatDateToDDMMYY(
+                  documentDate
+                )}</p>
                 ${
                   isInvoice && data.dueDate
-                    ? `<p><span class="label">Due Date:</span> ${data.dueDate}</p>`
+                    ? `<p><span class="label">Due Date:</span> ${formatDateToDDMMYY(
+                        data.dueDate
+                      )}</p>`
                     : ""
                 }
                 ${
                   !isInvoice && data.validUntil
-                    ? `<p><span class="label">Valid Until:</span> ${data.validUntil}</p>`
+                    ? `<p><span class="label">Valid Until:</span> ${formatDateToDDMMYY(
+                        data.validUntil
+                      )}</p>`
                     : ""
                 }
             </div>
