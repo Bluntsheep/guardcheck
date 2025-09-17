@@ -56,19 +56,20 @@ export async function POST(request) {
   try {
     const body = await request.json();
     const {
-      type, // 'quote' or 'invoice'
-      data, // quote/invoice data
+      type, // 'quote', 'invoice', or 'simple-email'
+      data, // quote/invoice data (not required for simple-email)
       emailTo,
       emailCc = [],
       emailBcc = [],
       customMessage = "",
+      subject, // Custom subject for simple emails
       sendEmail = true,
     } = body;
 
     // Validate required fields
-    if (!type || !data) {
+    if (!type) {
       return NextResponse.json(
-        { error: "Missing required fields: type and data" },
+        { error: "Missing required field: type" },
         { status: 400 }
       );
     }
@@ -80,7 +81,61 @@ export async function POST(request) {
       );
     }
 
-    // Launch Puppeteer
+    // Handle simple email without PDF generation
+    if (type === "simple-email") {
+      if (!customMessage) {
+        return NextResponse.json(
+          { error: "customMessage is required for simple-email type" },
+          { status: 400 }
+        );
+      }
+
+      // Send simple email without PDF
+      const transporter = createTransporter();
+
+      const emailSubject = subject || "GUARDCHECK.COM Notification";
+
+      const mailOptions = {
+        from: {
+          name: process.env.FROM_NAME || "GUARDCHECK.COM",
+          address: process.env.EMAIL_USER,
+        },
+        to: emailTo,
+        cc: emailCc.length > 0 ? emailCc : undefined,
+        bcc: emailBcc.length > 0 ? emailBcc : undefined,
+        subject: emailSubject,
+        text: customMessage,
+        html: customMessage.replace(/\n/g, "<br>"),
+      };
+
+      // Send email
+      const info = await transporter.sendMail(mailOptions);
+
+      return NextResponse.json({
+        success: true,
+        message: "Email sent successfully",
+        emailInfo: {
+          messageId: info.messageId,
+          accepted: info.accepted,
+          rejected: info.rejected,
+        },
+        emailType: "simple-email",
+        recipient: emailTo,
+      });
+    }
+
+    // Validate data field for PDF generation types
+    if (!data) {
+      return NextResponse.json(
+        {
+          error:
+            "Missing required field: data (required for quote and invoice types)",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Launch Puppeteer for PDF generation
     const browser = await puppeteer.launch({
       headless: true,
       args: [
@@ -147,7 +202,8 @@ export async function POST(request) {
     const clientName = data.client?.name || "Valued Client";
 
     // Email content
-    const subject = `GUARDCHECK.COM  ${documentType} #${documentNumber}`;
+    const emailSubject =
+      subject || `GUARDCHECK.COM  ${documentType} #${documentNumber}`;
 
     const defaultMessage =
       type === "quote"
@@ -193,7 +249,7 @@ GUARDCHECK.COM Accounts Team`;
       to: emailTo,
       cc: emailCc.length > 0 ? emailCc : undefined,
       bcc: emailBcc.length > 0 ? emailBcc : undefined,
-      subject: subject,
+      subject: emailSubject,
       text: emailContent,
       html: emailContent.replace(/\n/g, "<br>"),
       attachments: [
@@ -657,15 +713,33 @@ export async function GET() {
     message: "PDF Generation and Email API",
     usage: {
       method: "POST",
-      requiredFields: ["type", "data"],
+      requiredFields: ["type"],
       optionalFields: [
+        "data", // Required for quote/invoice, not for simple-email
         "emailTo",
         "emailCc",
         "emailBcc",
         "customMessage",
+        "subject", // For simple-email type
         "sendEmail",
       ],
-      types: ["quote", "invoice"],
+      types: ["quote", "invoice", "simple-email"],
+      examples: {
+        simpleEmail: {
+          type: "simple-email",
+          emailTo: "user@example.com",
+          subject: "Account Activated",
+          customMessage: "Your account has been successfully activated!",
+          sendEmail: true,
+        },
+        invoice: {
+          type: "invoice",
+          data: "{ invoice data object }",
+          emailTo: "user@example.com",
+          customMessage: "Custom invoice message",
+          sendEmail: true,
+        },
+      },
     },
   });
 }

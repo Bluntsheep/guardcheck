@@ -98,6 +98,103 @@ const generateInvoiceRef = () => {
   return `INV-${year}${month}-${random}`;
 };
 
+// Check for active invoices within the last year
+const checkActiveInvoice = async (connection, userEmail) => {
+  try {
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    const oneYearAgoFormatted = oneYearAgo.toISOString().split("T")[0]; // YYYY-MM-DD format
+
+    const [invoices] = await connection.execute(
+      `SELECT 
+        invoice_number,
+        invoice_date,
+        status,
+        total_amount
+      FROM invoices 
+      WHERE client_email = ? 
+        AND invoice_date >= ? 
+        AND status = 'paid'
+      ORDER BY invoice_date DESC 
+      LIMIT 1`,
+      [userEmail, oneYearAgoFormatted]
+    );
+
+    return invoices.length > 0 ? invoices[0] : null;
+  } catch (error) {
+    console.error("Error checking active invoice:", error);
+    throw error;
+  }
+};
+
+// Send activation email without invoice
+const sendActivationEmail = async (
+  baseUrl,
+  account,
+  existingInvoice = null
+) => {
+  try {
+    const validUntilDate = existingInvoice
+      ? new Date(
+          new Date(existingInvoice.invoice_date).setFullYear(
+            new Date(existingInvoice.invoice_date).getFullYear() + 1
+          )
+        ).toLocaleDateString()
+      : "";
+
+    const emailResponse = await fetch(`${baseUrl}/api/generate-and-email-pdf`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        type: "simple-email", // This tells your endpoint it's just an email, no PDF
+        emailTo: account.email,
+        sendEmail: true,
+        subject: "GUARDCHECK.COM Account Activated - Welcome Back!",
+        customMessage: `Dear ${account.contact_person},
+
+Great news! Your GUARDCHECK.COM account has been successfully activated!
+
+Your premium access subscription is now active and you can start using all GUARDCHECK.COM features immediately.
+
+Account Details:
+- Company: ${account.company_name}
+- Username: ${account.d_user}
+- Activation Date: ${getSouthAfricaDateTime()}
+- Subscription: Annual Premium Access
+${
+  existingInvoice
+    ? `- Current Invoice: ${existingInvoice.invoice_number} (Valid until ${validUntilDate})`
+    : ""
+}
+
+${
+  existingInvoice
+    ? "Your existing subscription is still valid, so no new invoice has been generated."
+    : ""
+}
+
+Login to your account to start using GUARDCHECK.COM's premium security verification services.
+
+If you have any questions or need assistance, please don't hesitate to contact our support team.
+
+Welcome back to GUARDCHECK.COM Premium!
+
+Best regards,
+The GUARDCHECK.COM Team
+Email: info@guardcheck.com
+Phone: 012-492-9089`,
+      }),
+    });
+
+    return emailResponse.ok;
+  } catch (error) {
+    console.error("Error sending activation email:", error);
+    return false;
+  }
+};
+
 // Create invoice data from user registration data
 const createInvoiceData = (userData, invoiceNumber) => {
   const invoiceDate = new Date().toLocaleDateString("en-ZA");
@@ -348,38 +445,72 @@ export async function PATCH(request) {
     );
 
     let invoiceId = null;
+    let emailSent = false;
+    let hasActiveInvoice = false;
+    let existingInvoice = null;
 
-    // If activating the account, create and save invoice, then send activation email
+    // If activating the account, check for existing invoices first
     if (active === 1) {
       try {
-        const invoiceNumber = generateInvoiceRef();
-        const invoiceData = createInvoiceData(account, invoiceNumber);
-
-        // Save invoice to database first
-        invoiceId = await saveInvoiceToDatabase(connection, invoiceData, id);
-
-        // Commit the transaction after successful invoice save
-        await connection.commit();
+        // Check for active invoices within the last year
+        existingInvoice = await checkActiveInvoice(connection, account.email);
+        hasActiveInvoice = existingInvoice !== null;
 
         const baseUrl = getBaseUrl(request);
 
-        const emailResponse = await fetch(
-          `${baseUrl}/api/generate-and-email-pdf`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              type: "invoice",
-              data: invoiceData,
-              emailTo: account.email,
-              sendEmail: true,
-              customMessage: `Dear ${account.contact_person},
+        if (hasActiveInvoice) {
+          // User has an active invoice, just send activation email without generating new invoice
+          console.log(
+            `User ${account.email} has active invoice ${existingInvoice.invoice_number}, skipping invoice generation`
+          );
 
-Congratulations! Your GUARDCHECK.COM  account has been successfully activated!
+          // Commit the transaction first
+          await connection.commit();
 
-Your premium access subscription is now active and you can start using all GUARDCHECK.COM  features immediately.
+          // Send simple activation email
+          emailSent = await sendActivationEmail(
+            baseUrl,
+            account,
+            existingInvoice
+          );
+
+          if (!emailSent) {
+            console.error("Failed to send activation email");
+          } else {
+            console.log("Activation email sent successfully (no new invoice)");
+          }
+        } else {
+          // No active invoice found, generate new invoice and send email with invoice
+          console.log(
+            `No active invoice found for ${account.email}, generating new invoice`
+          );
+
+          const invoiceNumber = generateInvoiceRef();
+          const invoiceData = createInvoiceData(account, invoiceNumber);
+
+          // Save invoice to database first
+          invoiceId = await saveInvoiceToDatabase(connection, invoiceData, id);
+
+          // Commit the transaction after successful invoice save
+          await connection.commit();
+
+          const emailResponse = await fetch(
+            `${baseUrl}/api/generate-and-email-pdf`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                type: "invoice",
+                data: invoiceData,
+                emailTo: account.email,
+                sendEmail: true,
+                customMessage: `Dear ${account.contact_person},
+
+Congratulations! Your GUARDCHECK.COM account has been successfully activated!
+
+Your premium access subscription is now active and you can start using all GUARDCHECK.COM features immediately.
 
 Account Details:
 - Company: ${account.company_name}
@@ -390,27 +521,30 @@ Account Details:
 
 Please find attached your invoice for this subscription. Your account will remain active for 12 months from the activation date.
 
-Login to your account to start using GUARDCHECK.COM 's premium security verification services.
+Login to your account to start using GUARDCHECK.COM's premium security verification services.
 
 If you have any questions or need assistance, please don't hesitate to contact our support team.
 
-Welcome to GUARDCHECK.COM  Premium!
+Welcome to GUARDCHECK.COM Premium!
 
 Best regards,
-The GUARDCHECK.COM  Team
+The GUARDCHECK.COM Team
 Email: info@guardcheck.com
 Phone: 012-492-9089`,
-            }),
-          }
-        );
-
-        if (!emailResponse.ok) {
-          console.error(
-            "Failed to send activation email:",
-            await emailResponse.text()
+              }),
+            }
           );
-        } else {
-          console.log("Activation email with invoice sent successfully");
+
+          emailSent = emailResponse.ok;
+
+          if (!emailSent) {
+            console.error(
+              "Failed to send activation email with invoice:",
+              await emailResponse.text()
+            );
+          } else {
+            console.log("Activation email with invoice sent successfully");
+          }
         }
       } catch (error) {
         await connection.rollback();
@@ -418,8 +552,7 @@ Phone: 012-492-9089`,
         return NextResponse.json(
           {
             success: false,
-            error:
-              "Failed to activate account and create invoice: " + error.message,
+            error: "Failed to activate account: " + error.message,
           },
           { status: 500 }
         );
@@ -433,7 +566,13 @@ Phone: 012-492-9089`,
       success: true,
       message: `Account successfully ${
         active === 1 ? "activated" : "deactivated"
-      }${active === 1 ? ". Activation email sent and invoice created." : ""}`,
+      }${
+        active === 1
+          ? hasActiveInvoice
+            ? ". Activation email sent (existing invoice still valid)."
+            : ". Activation email sent and new invoice created."
+          : ""
+      }`,
       data: {
         id: parseInt(id),
         company_name: account.company_name,
@@ -442,6 +581,9 @@ Phone: 012-492-9089`,
         active_date: active === 1 ? getSouthAfricaDateTime() : null,
         previousActive: account.active,
         invoiceId: invoiceId,
+        hasActiveInvoice: hasActiveInvoice,
+        existingInvoiceNumber: existingInvoice?.invoice_number || null,
+        emailSent: emailSent,
         updatedAt: new Date().toISOString(),
       },
     });
