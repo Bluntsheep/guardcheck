@@ -198,7 +198,7 @@ const BlackListGuard = () => {
                     value={formData.sira_sob_no}
                     onChange={handleInputChange}
                     className="bg-white p-3 my-2 w-[100%]"
-                    placeholder="PSIRA / SOB Number"
+                    placeholder="PSIRA Number"
                   />
                 </div>
                 <div className="w-full">

@@ -241,7 +241,7 @@ const Member = () => {
             <span className="text-gray-800">{account.cell_no}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">PSIRA/SOB:</span>
+            <span className="font-semibold text-gray-600">PSIRA:</span>
             <span className="text-gray-800">{account.sira_sob_no}</span>
           </div>
           <div className="flex justify-between">

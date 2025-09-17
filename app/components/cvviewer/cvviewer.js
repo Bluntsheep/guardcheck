@@ -12,7 +12,7 @@ const Cvviewer = ({ currentCV, handleCV }) => {
     { label: "Surname", value: cv.surname },
     { label: "Gender", value: cv.gender },
     { label: "ID Number", value: cv.idNumber },
-    { label: "Sira / Sob No", value: cv.siraNumber },
+    { label: "Sira No", value: cv.siraNumber },
     { label: "Phone Number", value: cv.phone },
     { label: "Province", value: cv.area },
     { label: "Town", value: cv.town },

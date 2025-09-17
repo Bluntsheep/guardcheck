@@ -136,7 +136,7 @@ const RegistrationDetails = () => {
                 <div className="w-full">
                   <input
                     className="bg-white p-3 my-2 w-[100%] border rounded"
-                    placeholder="PSIRA / SOB Number"
+                    placeholder="PSIRA Number"
                     name="sira_sob_number"
                   />
                 </div>

@@ -480,7 +480,7 @@ const UpdateProfile = () => {
                     value={formData.siraSobNumber}
                     onChange={handleInputChange}
                     className="bg-white p-3 my-2 w-[100%] border border-gray-300 rounded focus:outline-none focus:border-[#167BA9]"
-                    placeholder="PSIRA / SOB Number"
+                    placeholder="PSIRA Number"
                   />
                 </div>
                 <div className="w-full">

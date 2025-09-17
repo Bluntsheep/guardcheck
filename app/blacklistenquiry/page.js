@@ -359,7 +359,7 @@ const BlacklistEnquiry = () => {
                   <div class="info-value">${record.idNumber || "N/A"}</div>
                 </div>
                 <div class="info-item full-width">
-                  <div class="info-label">PSIRA/SOB Number</div>
+                  <div class="info-label">PSIRA Number</div>
                   <div class="info-value">${record.siraSobNo || "N/A"}</div>
                 </div>
               </div>
@@ -500,7 +500,7 @@ const BlacklistEnquiry = () => {
           <span className="text-gray-800">{record.idNumber}</span>
         </div>
         <div className="flex justify-between">
-          <span className="font-semibold text-gray-600">SIRA/SOB No:</span>
+          <span className="font-semibold text-gray-600">SIRA No:</span>
           <span className="text-gray-800">{record.siraSobNo}</span>
         </div>
         <div className="flex justify-between">
@@ -551,7 +551,7 @@ const BlacklistEnquiry = () => {
             <input
               onChange={(e) => handleChange(e.target.value)}
               className="shadow-xl bg-white w-full p-4 lg:p-6 pr-12 lg:pr-16 rounded-lg"
-              placeholder="Enter PSIRA / SOB No / or ID"
+              placeholder="Enter PSIRA No / or ID"
             />
             <button
               className="absolute right-3 lg:right-4 top-1/2 transform -translate-y-1/2 p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -651,7 +651,7 @@ const BlacklistEnquiry = () => {
                     ID Number
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Sira / Sob No
+                    Sira No
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                     Date

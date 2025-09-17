@@ -33,7 +33,7 @@ const CvUpdatemobile = () => {
             />
             <input
               className=" w-[80%] mt-3 bg-slate-200 p-3 text-lg"
-              placeholder="PSIR / SOB Number"
+              placeholder="PSIR Number"
             />
           </div>
           <div className="w-full text-center">

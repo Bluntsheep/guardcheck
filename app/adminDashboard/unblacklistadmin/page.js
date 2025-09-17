@@ -154,7 +154,7 @@ const UnblacklistGuardAdmin = () => {
         body: JSON.stringify({
           id: recordId,
           idNumber: record.idNumber,
-          siraSobNo: record.siraSobNo,
+          siraNo: record.siraSobNo,
         }),
       });
 
@@ -232,7 +232,7 @@ const UnblacklistGuardAdmin = () => {
             <span className="text-gray-800">{record.idNumber}</span>
           </div>
           <div className="flex justify-between">
-            <span className="font-semibold text-gray-600">SIRA/SOB No:</span>
+            <span className="font-semibold text-gray-600">SIRA No:</span>
             <span className="text-gray-800">{record.siraSobNo}</span>
           </div>
           <div className="flex justify-between">
@@ -279,7 +279,7 @@ const UnblacklistGuardAdmin = () => {
             <input
               onChange={handleChange}
               className="shadow-xl bg-white w-full p-4 lg:p-6 pr-12 lg:pr-16 rounded-lg"
-              placeholder="Enter PSIRA / SOB No / or ID"
+              placeholder="Enter PSIRA No / or ID"
               value={input}
             />
             <button
@@ -371,7 +371,7 @@ const UnblacklistGuardAdmin = () => {
                     ID Number
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Sira / Sob No
+                    Sira No
                   </th>
                   <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
                     Date

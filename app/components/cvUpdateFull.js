@@ -95,7 +95,7 @@ const CvUpdateFull = () => {
               <input
                 name="snum"
                 className=" bg-slate-200 p-3 text-lg"
-                placeholder="PSIR / SOB Number"
+                placeholder="PSIR Number"
               />
             </div>
             <div className="flex gap-8 mx-8">
