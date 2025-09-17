@@ -23,6 +23,14 @@ const UnblacklistGuardAdmin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
+  const handleDateFormater = (dateString) => {
+    if (dateString.includes("-")) {
+      return dateString;
+    } else {
+      return new Date(dateString * 1000).toLocaleDateString("en-GB");
+    }
+  };
+
   // --- New useEffect hook for initial data fetch ---
   useEffect(() => {
     fetchAllGuards();
@@ -419,7 +427,7 @@ const UnblacklistGuardAdmin = () => {
                           {record.siraSobNo}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
-                          {record.date}
+                          {handleDateFormater(record.date)}
                         </td>
                         <td className="px-4 py-3 text-sm text-gray-700">
                           {record.reason}
