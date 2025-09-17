@@ -90,12 +90,12 @@ const CvUpdateFull = () => {
               <input
                 name="idnum"
                 className=" bg-slate-200 p-3 text-lg"
-                placeholder="Id Number"
+                placeholder="ID Number"
               />
               <input
                 name="snum"
                 className=" bg-slate-200 p-3 text-lg"
-                placeholder="PSIR Number"
+                placeholder="PSIRA Number"
               />
             </div>
             <div className="flex gap-8 mx-8">

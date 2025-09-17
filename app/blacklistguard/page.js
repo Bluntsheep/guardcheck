@@ -46,6 +46,24 @@ const BlackListGuard = () => {
     }));
   };
 
+  // Handle date field click to open picker
+  const handleDateClick = () => {
+    const dateInput = document.querySelector('input[name="date"][type="date"]');
+    if (dateInput) {
+      dateInput.showPicker?.() || dateInput.focus();
+    }
+  };
+
+  // Convert date from yyyy-mm-dd to dd/mm/yy for display
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}/${month}/${year}`;
+  };
+
   // POST request function
   const addGuardToBlacklist = async (guardData) => {
     try {
@@ -236,14 +254,45 @@ const BlackListGuard = () => {
                     required
                   />
                 </div>
-                <div className="w-full">
+                <div
+                  className="w-full relative cursor-pointer"
+                  onClick={handleDateClick}>
                   <input
                     name="date"
                     value={formData.date}
                     onChange={handleInputChange}
                     type="date"
-                    className="bg-white p-3 my-2 w-[100%]"
+                    className="bg-white p-3 my-2 w-[100%] opacity-0 absolute inset-0 pointer-events-none"
                   />
+                  <input
+                    type="text"
+                    value={formatDateForDisplay(formData.date)}
+                    placeholder="dd/mm/yy"
+                    readOnly
+                    className="bg-white p-3 my-2 w-[100%] cursor-pointer pointer-events-none"
+                  />
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none z-20">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round">
+                      <rect
+                        x="3"
+                        y="4"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="8"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </div>
                 </div>
                 <div className="w-full">
                   <input
