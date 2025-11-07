@@ -146,7 +146,7 @@ const Menubar = () => {
       {/* Top info bar */}
       <div className="bg-[#137AA7] px-[10%] text-white justify-between items-center shadow-2xl hidden md:flex">
         <div>
-          <p>Contact Us: 012-492- | info@guardcheck.com</p>
+          <p>Contact Us: 082-551-7908 | info@guardcheck.com</p>
         </div>
         <div className="bg-[#FF1001] text-white py-4 px-8 h-[100%]">
           <p>Yearly Fee of R 2850.00 no hidden costs</p>
