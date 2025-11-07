@@ -22,7 +22,7 @@ const Footer = () => {
       <div className="text-white p-5 flex flex-col gap-1 justify-around">
         <p className=" mb-2 md:mb-6 text-2xl font-bold">Contact Us</p>
         <div>
-          <p className=" text-sm">012-492-9089</p>
+          <p className=" text-sm">082-551-7908</p>
         </div>
         <div>
           <p className=" text-sm">info@guardcheck.com</p>

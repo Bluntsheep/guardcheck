@@ -55,7 +55,7 @@ const Contact = () => {
               <p className=" font-bold text-xl hover:text-red-600 text-[#12114A]">
                 Call Us
               </p>
-              <p className=" text-[#888888] mt-2">012-492-9089</p>
+              <p className=" text-[#888888] mt-2">082-551-7908</p>
             </div>
           </div>
           <div className=" flex gap-6 bg-white p-8 shadow-md mt-8   w-full hover:shadow-xs">

@@ -292,7 +292,7 @@ const Registration = () => {
               4. Registered address 118 Jack Nicklause Drive Pecanwood Estate
               Broederstroom 0240;
               <br />
-              5. Telephone Number: (012)492-9089;
+              5. Telephone Number: (083)551-7908;
               <br />
               6. Website address: www.guardcheck.com;
               <br />

@@ -50,7 +50,7 @@ const createQuoteData = (userData, quoteNumber) => {
       name: "GUARDCHECK.COM (Pty) Ltd",
       address: "Postnet Suite 103, Private bag X0003, Ifafi, 0260",
       city: "Cape Town, 8001",
-      phone: "012-492-9089",
+      phone: "082-551-7908",
       email: "info@guardcheck.com",
       website: "www.guardcheck.com",
     },
@@ -290,7 +290,7 @@ Welcome to Guard Check!
 Best regards,
 The Guard Check Team
 Email: info@guardcheck.com
-Phone: 012-492-9089`,
+Phone: 082-551-7908`,
           }),
         }
       );
