@@ -1,12 +1,17 @@
+"use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaRegCopy } from "react-icons/fa";
 
 const CvUpdateFull = () => {
   const router = useRouter();
+  const [status, setStatus] = useState(null); // null | "success" | "error"
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleCVSubmit = async (e) => {
     e.preventDefault();
+    setStatus(null);
+    setErrorMessage("");
 
     const form = e.target;
     const formData = new FormData(form);
@@ -14,8 +19,6 @@ const CvUpdateFull = () => {
     let finalGuardTypeString = selectedGuardTypesArray;
 
     const currentdate = formData.get("date");
-
-    console.log("date", currentdate);
 
     if (currentdate.length > 0) {
       console.log("Cv Uploaded...");
@@ -34,8 +37,6 @@ const CvUpdateFull = () => {
         formObject.guard_type = finalGuardTypeString;
       }
 
-      console.log(formObject);
-
       try {
         const response = await fetch("/api/cvUpload", {
           method: "POST",
@@ -48,23 +49,30 @@ const CvUpdateFull = () => {
         const data = await response.json();
 
         if (response.ok) {
-          console.log("CV Uploaded");
-          router.push("/");
+          setStatus("success");
+          form.reset();
         } else {
-          console.log("'CV Upload Failed. Please try again.'");
+          setStatus("error");
+          setErrorMessage(
+            data?.message || "CV upload failed. Please try again.",
+          );
         }
       } catch (error) {
         console.error("Frontend CV Upload error:", error);
+        setStatus("error");
+        setErrorMessage(
+          "Something went wrong. Please check your connection and try again.",
+        );
       }
     }
   };
 
   return (
-    <div className=" flex-col items-center justify-center py-3 md:py-12 mt-16 bg-[#FAFAFA] hidden md:flex">
+    <div className="flex-col items-center justify-center py-3 md:py-12 mt-16 bg-[#FAFAFA] hidden md:flex">
       <form onSubmit={handleCVSubmit}>
         <div className="flex">
           <div className="flex flex-col items-center justify-center p-3 md:p-32 bg-[#167BA9]">
-            <div className=" bg-white p-8 rounded-full">
+            <div className="bg-white p-8 rounded-full">
               <FaRegCopy color="grey" size={100} />
             </div>
             <div className="flex flex-col text-center text-white font-bold text-2xl mt-12">
@@ -74,39 +82,82 @@ const CvUpdateFull = () => {
             </div>
           </div>
           <div className="bg-white flex flex-col justify-between px-3">
+            {/* Success banner */}
+            {status === "success" && (
+              <div className="mx-8 mt-4 flex items-center gap-3 bg-green-50 border border-green-300 text-green-800 rounded-md px-4 py-3 text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 flex-shrink-0 text-green-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div>
+                  <p className="font-semibold">CV submitted successfully!</p>
+                  <p className="text-green-700">
+                    Your CV has been uploaded and sent to security companies.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Error banner */}
+            {status === "error" && (
+              <div className="mx-8 mt-4 flex items-center gap-3 bg-red-50 border border-red-300 text-red-800 rounded-md px-4 py-3 text-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 flex-shrink-0 text-red-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <div>
+                  <p className="font-semibold">Upload failed</p>
+                  <p className="text-red-700">{errorMessage}</p>
+                </div>
+              </div>
+            )}
+
             <div className="flex gap-8 mx-8">
               <input
                 name="name"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="Name"
               />
               <input
                 name="surname"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="Surname"
               />
             </div>
             <div className="flex gap-8 mx-8">
               <input
                 name="idnum"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="ID Number"
               />
               <input
                 name="snum"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="PSIRA Number"
               />
             </div>
             <div className="flex gap-8 mx-8">
               <input
                 name="phonenum"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="Phone"
               />
               <select
-                className=" bg-slate-200 p-3 text-lg w-full"
-                placeholder="Select Region"
+                className="bg-slate-200 p-3 text-lg w-full"
                 id="g_area"
                 name="g_area">
                 <option value="Select Region">Select Region</option>
@@ -124,13 +175,12 @@ const CvUpdateFull = () => {
             <div className="flex gap-8 mx-8">
               <input
                 name="town"
-                className=" bg-slate-200 p-3 text-lg"
+                className="bg-slate-200 p-3 text-lg"
                 placeholder="Town"
               />
               <select
                 name="g_hgrade"
-                className=" bg-slate-200 p-3 text-lg w-full"
-                placeholder="Select Highest Grade">
+                className="bg-slate-200 p-3 text-lg w-full">
                 <option value="Select Highest Grade">
                   Select Highest Grade
                 </option>
@@ -157,12 +207,12 @@ const CvUpdateFull = () => {
             <div className="flex gap-8 justify-center">
               <textarea
                 name="pexp"
-                className=" w-[90%] bg-slate-200 p-3"
+                className="w-[90%] bg-slate-200 p-3"
                 rows={5}
                 placeholder="Personal Experience"
               />
             </div>
-            <div className=" text-xs pl-3">
+            <div className="text-xs pl-3">
               <p>Guard Type:</p>
             </div>
             <div className="text-xs px-5 flex gap-2 justify-around">
@@ -187,15 +237,10 @@ const CvUpdateFull = () => {
                 <span className="ml-2">Control room</span>
               </label>
             </div>
-            <input
-              name="date"
-              placeholder="date"
-              className=" hidden"
-              defaultValue=""
-            />
+            <input name="date" className="hidden" defaultValue="" />
             <button
               type="submit"
-              className="bg-[#167BA9] text-white p-3 mt-4 rounded-md w-[30%]  self-center hover:bg-[#0F5A7B] transition-colors duration-300">
+              className="bg-[#167BA9] text-white p-3 mt-4 rounded-md w-[30%] self-center hover:bg-[#0F5A7B] transition-colors duration-300">
               Submit
             </button>
           </div>
