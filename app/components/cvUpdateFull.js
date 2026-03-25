@@ -195,7 +195,7 @@ const CvUpdateFull = () => {
             />
             <button
               type="submit"
-              className="bg-[#167BA9] text-white p-3 mt-4 rounded-md w-[30%]  self-center">
+              className="bg-[#167BA9] text-white p-3 mt-4 rounded-md w-[30%]  self-center hover:bg-[#0F5A7B] transition-colors duration-300">
               Submit
             </button>
           </div>

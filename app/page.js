@@ -11,7 +11,7 @@ export default function Home() {
   const runDbTest = async () => {
     setDbTestStatus("Testing...");
     console.log(
-      "Starting DB connection test from client (calling API route)..."
+      "Starting DB connection test from client (calling API route)...",
     );
     try {
       const response = await fetch("/api/testdb", {
@@ -55,6 +55,9 @@ export default function Home() {
           <br /> industry, check guards who you would like to employ and receive
           CVs of guards looking
           <br /> for work online.
+        </p>
+        <p className=" font-bold text-[#167BA9]">
+          UPLOAD YOUR CV FOR FREE TO GUARDCHECK.COM.
         </p>
       </div>
       <CvUpdateFull />
