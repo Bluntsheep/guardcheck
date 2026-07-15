@@ -234,21 +234,13 @@ export async function POST(request) {
       ]
     );
 
-    // Get the newly created user data
-    const [newUser] = await connection.execute(
-      "SELECT id, d_user, active FROM registration WHERE id = ?",
-      [userId]
-    );
-
-    const userData = newUser[0];
-
-    // Commit the transaction
+    // Commit transaction immediately to secure the data in the DB
     await connection.commit();
 
-    // Prepare quote data for PDF generation
+    // Prepare quote data for PDF generation using data we already have
     const quoteData = createQuoteData(body, quoteNumber);
 
-    // Send quote email (async, don't wait for it)
+    // Send quote email (async, don't block response)
     try {
       const baseUrl = getBaseUrl(request);
 
@@ -305,16 +297,15 @@ Phone: 082-551-7908`,
       }
     } catch (emailError) {
       console.error("Error sending quote email:", emailError);
-      // Don't fail the registration if email fails
     }
 
     return NextResponse.json({
       success: true,
       message: "Registration successful! A quote has been sent to your email.",
       user: {
-        id: userData.id,
-        username: userData.d_user,
-        active: userData.active,
+        id: userId,
+        username: username,
+        active: 0,
       },
       quote: {
         number: quoteNumber,
