@@ -157,13 +157,13 @@ export async function POST(request) {
     // Create the HTML content with type parameter
     const htmlContent = generateDocumentHTML(data, type);
 
-    // Set the HTML content
+    // Set the HTML content with 'domcontentloaded' to prevent timeouts
     await page.setContent(htmlContent, {
-      waitUntil: "networkidle0",
+      waitUntil: "domcontentloaded",
       timeout: 30000,
     });
 
-    // FIXED: Replace page.waitForTimeout with Promise-based timeout
+    // Let any remaining fonts/images render during this 2-second sleep
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Generate PDF
